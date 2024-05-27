@@ -22,11 +22,11 @@ def show_args_info(args):
 def main():
     parser = argparse.ArgumentParser()
     #system args
-    parser.add_argument('--data_dir', default='../data/', type=str)
-    parser.add_argument('--output_dir', default='output/', type=str)
+    parser.add_argument('--data_dir', default='./data/', type=str)
+    parser.add_argument('--output_dir', default='./src/output/', type=str)
     parser.add_argument('--data_name', default='Sports_and_Outdoors', type=str)
     parser.add_argument('--do_eval', action='store_true')
-    parser.add_argument('--model_idx', default=0, type=int, help="model idenfier 10, 20, 30...")
+    parser.add_argument('--model_idx', default=-1, type=int, help="model idenfier 10, 20, 30...")
     parser.add_argument("--gpu_id", type=str, default="0", help="gpu_id")
 
     #data augmentation args
@@ -167,6 +167,7 @@ def main():
 
 
     if args.do_eval:
+        # 走这个逻辑，只进行测试
         trainer.args.train_matrix = test_rating_matrix
         trainer.load(args.checkpoint_path)
         print(f'Load model from {args.checkpoint_path} for test!')

@@ -22,16 +22,16 @@ class NCELoss(nn.Module):
         
     # #modified based on impl: https://github.com/ae-foster/pytorch-simclr/blob/dc9ac57a35aec5c7d7d5fe6dc070a975f493c1a5/critic.py#L5
     def forward(self, batch_sample_one, batch_sample_two):
-        sim11 = torch.matmul(batch_sample_one, batch_sample_one.T) / self.temperature
-        sim22 = torch.matmul(batch_sample_two, batch_sample_two.T) / self.temperature
-        sim12 = torch.matmul(batch_sample_one, batch_sample_two.T) / self.temperature
+        sim11 = torch.matmul(batch_sample_one, batch_sample_one.T) / self.temperature # [256, 256]
+        sim22 = torch.matmul(batch_sample_two, batch_sample_two.T) / self.temperature # [256, 256]
+        sim12 = torch.matmul(batch_sample_one, batch_sample_two.T) / self.temperature # [256, 256]
         d = sim12.shape[-1]
         sim11[..., range(d), range(d)] = float('-inf')
         sim22[..., range(d), range(d)] = float('-inf')
-        raw_scores1 = torch.cat([sim12, sim11], dim=-1)
-        raw_scores2 = torch.cat([sim22, sim12.transpose(-1, -2)], dim=-1)
-        logits = torch.cat([raw_scores1, raw_scores2], dim=-2)
-        labels = torch.arange(2 * d, dtype=torch.long, device=logits.device)
+        raw_scores1 = torch.cat([sim12, sim11], dim=-1) # [256, 512]
+        raw_scores2 = torch.cat([sim22, sim12.transpose(-1, -2)], dim=-1) # [256,512]
+        logits = torch.cat([raw_scores1, raw_scores2], dim=-2) # [512, 512]
+        labels = torch.arange(2 * d, dtype=torch.long, device=logits.device) # [512]
         nce_loss = self.criterion(logits, labels)
         return nce_loss
 

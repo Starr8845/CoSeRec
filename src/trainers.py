@@ -166,18 +166,20 @@ class CoSeRecTrainer(Trainer):
         )
 
     def _one_pair_contrastive_learning(self, inputs):
+        # 这里输入输出的维度要掌握一下  
+        # inputs: 0: [256,50],  1:[256,50]
         '''
         contrastive learning given one pair sequences (batch)
         inputs: [batch1_augmented_data, batch2_augmentated_data]
         '''
-        cl_batch = torch.cat(inputs, dim=0)
+        cl_batch = torch.cat(inputs, dim=0) # [512, 50]
         cl_batch = cl_batch.to(self.device)
-        cl_sequence_output = self.model.transformer_encoder(cl_batch)
+        cl_sequence_output = self.model.transformer_encoder(cl_batch) # [512, 50 64]
         # cf_sequence_output = cf_sequence_output[:, -1, :]
-        cl_sequence_flatten = cl_sequence_output.view(cl_batch.shape[0], -1)
+        cl_sequence_flatten = cl_sequence_output.view(cl_batch.shape[0], -1)  #[512, 3200]
         # cf_output = self.projection(cf_sequence_flatten)
         batch_size = cl_batch.shape[0]//2
-        cl_output_slice = torch.split(cl_sequence_flatten, batch_size)
+        cl_output_slice = torch.split(cl_sequence_flatten, batch_size)  # tuple, 0: [256,3200], 1:[256, 3200]
         cl_loss = self.cf_criterion(cl_output_slice[0], 
                                 cl_output_slice[1])
         return cl_loss
@@ -214,7 +216,11 @@ class CoSeRecTrainer(Trainer):
 
                 # ---------- contrastive learning task -------------#
                 cl_losses = []
+                # 尝试一下数据增强的效果，在这里写就可以
+                # for cl_batch in cl_batches:
+
                 for cl_batch in cl_batches:
+                    # cl_batch:list   0: [256,50],  1:[256,50]
                     cl_loss = self._one_pair_contrastive_learning(cl_batch)
                     cl_losses.append(cl_loss)
 
@@ -262,23 +268,28 @@ class CoSeRecTrainer(Trainer):
                 for i, batch in rec_data_iter:
                     # 0. batch_data will be sent into the device(GPU or cpu)
                     batch = tuple(t.to(self.device) for t in batch)
-                    user_ids, input_ids, target_pos, target_neg, answers = batch
+                    user_ids, input_ids, target_pos, target_neg, answers = batch # 这里要调试看一下输出的都是什么
+                    # user_ids: [256] 用户的id
+                    # input_ids: [256, 50]
+                    # target_pos: [256, 50]
+                    # target neg: [256, 50]
+                    # answers: [256, 1]
                     recommend_output = self.model.transformer_encoder(input_ids)
 
                     recommend_output = recommend_output[:, -1, :]
                     # recommendation results
 
-                    rating_pred = self.predict_full(recommend_output)
+                    rating_pred = self.predict_full(recommend_output) # [256, 18359]
 
                     rating_pred = rating_pred.cpu().data.numpy().copy()
-                    batch_user_index = user_ids.cpu().numpy()
-                    rating_pred[self.args.train_matrix[batch_user_index].toarray() > 0] = 0
+                    batch_user_index = user_ids.cpu().numpy() # (256,)
+                    rating_pred[self.args.train_matrix[batch_user_index].toarray() > 0] = 0 # 这一步为什么要加这个? 猜测不预测过去序列中已经出现过的item
                     # reference: https://stackoverflow.com/a/23734295, https://stackoverflow.com/a/20104162
-                    # argpartition T: O(n)  argsort O(nlogn)
-                    ind = np.argpartition(rating_pred, -20)[:, -20:]
-                    arr_ind = rating_pred[np.arange(len(rating_pred))[:, None], ind]
-                    arr_ind_argsort = np.argsort(arr_ind)[np.arange(len(rating_pred)), ::-1]
-                    batch_pred_list = ind[np.arange(len(rating_pred))[:, None], arr_ind_argsort]
+                    # argpartition T: O(n)  argsort O(nlogn) 
+                    ind = np.argpartition(rating_pred, -20)[:, -20:] # (256, 20)
+                    arr_ind = rating_pred[np.arange(len(rating_pred))[:, None], ind] # (256, 20)
+                    arr_ind_argsort = np.argsort(arr_ind)[np.arange(len(rating_pred)), ::-1] # (256, 20)
+                    batch_pred_list = ind[np.arange(len(rating_pred))[:, None], arr_ind_argsort] # (256, 20)
 
                     if i == 0:
                         pred_list = batch_pred_list
@@ -286,6 +297,16 @@ class CoSeRecTrainer(Trainer):
                     else:
                         pred_list = np.append(pred_list, batch_pred_list, axis=0)
                         answer_list = np.append(answer_list, answers.cpu().data.numpy(), axis=0)
+                # 在这里对数据 分一下类，分别计算对应的测试score
+                # temp
+                import pickle
+                with open("/home/zzx/seqRec/CLTrys/CoSeRec/data/Sports_and_Outdoors_head_tail.pkl","rb") as f:
+                    head_tail = pickle.load(f)
+                for key in head_tail:
+                    indexes = head_tail[key]
+                    answer_list_part, pred_list_part = answer_list[indexes], pred_list[indexes]
+                    result_part = self.get_full_sort_score(epoch, answer_list_part, pred_list_part)
+                    print(key, result_part)
                 return self.get_full_sort_score(epoch, answer_list, pred_list)
 
             else:

@@ -1,7 +1,7 @@
 python main.py --data_name Sports_and_Outdoors 
 
 
-python main.py --data_name Sports_and_Outdoors --do_eval --model_idx 0
+python src/main.py --data_name Sports_and_Outdoors --do_eval --model_idx 0
 
 python src/main.py --data_name Sports_and_Outdoors --do_eval --model_idx 0
 

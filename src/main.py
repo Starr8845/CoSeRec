@@ -171,7 +171,8 @@ def main():
         trainer.args.train_matrix = test_rating_matrix
         trainer.load(args.checkpoint_path)
         print(f'Load model from {args.checkpoint_path} for test!')
-        scores, result_info = trainer.test(0, full_sort=True)
+        torch.save(model.item_embeddings.weight.detach(),f"./{args_str}_item_embeddings.pt")
+        # scores, result_info = trainer.test(0, full_sort=True)
 
     else:
         print(f'Train CoSeRec')

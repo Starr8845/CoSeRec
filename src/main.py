@@ -12,7 +12,10 @@ from datasets import RecWithContrastiveLearningDataset
 
 from trainers import CoSeRecTrainer
 from models import SASRecModel, OfflineItemSimilarity, OnlineItemSimilarity
-from utils import EarlyStopping, get_user_seqs, get_item2attribute_json, check_path, set_seed
+from utils import EarlyStopping, get_user_seqs, get_item2attribute_json, check_path, set_seed, process_item_frequency
+from build_graph import build_sim_graph
+
+from torch.utils.tensorboard import SummaryWriter  
 
 def show_args_info(args):
     print(f"--------------------Configure Info:------------")
@@ -22,11 +25,11 @@ def show_args_info(args):
 def main():
     parser = argparse.ArgumentParser()
     #system args
-    parser.add_argument('--data_dir', default='../data/', type=str)
+    parser.add_argument('--data_dir', default='./data/', type=str)
     parser.add_argument('--output_dir', default='output/', type=str)
     parser.add_argument('--data_name', default='Sports_and_Outdoors', type=str)
     parser.add_argument('--do_eval', action='store_true')
-    parser.add_argument('--model_idx', default=0, type=int, help="model idenfier 10, 20, 30...")
+    parser.add_argument('--model_idx', default="temptempTry", type=str, help="model idenfier 10, 20, 30...")
     parser.add_argument("--gpu_id", type=str, default="0", help="gpu_id")
 
     #data augmentation args
@@ -98,6 +101,10 @@ def main():
     parser.add_argument("--adam_beta1", type=float, default=0.9, help="adam first beta value")
     parser.add_argument("--adam_beta2", type=float, default=0.999, help="adam second beta value")
 
+    parser.add_argument("--cl", action="store_true")
+    parser.add_argument("--multi_neg", action="store_true")
+
+
     args = parser.parse_args()
 
     set_seed(args.seed)
@@ -105,11 +112,21 @@ def main():
 
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_id
     args.cuda_condition = torch.cuda.is_available() and not args.no_cuda
-    print("Using Cuda:", torch.cuda.is_available())
+    print("Using Cuda:", args.cuda_condition )
     args.data_file = args.data_dir + args.data_name + '.txt'
 
     user_seq, max_item, valid_rating_matrix, test_rating_matrix = \
         get_user_seqs(args.data_file)
+    
+    item_frequency, (high_freq, mid_freq, low_freq), item_freq_class = process_item_frequency(args.data_file) 
+    
+    # 在这里把item-item CF graph读进来，在data loader里去做改动  
+    item_graph = build_sim_graph(valid_rating_matrix, 20, len(user_seq), max_item)
+    # print(item_graph)
+    # exit(-1)
+    item_graph = item_graph.to('cuda')
+
+
 
     args.item_size = max_item + 2
     args.mask_id = max_item + 1
@@ -125,6 +142,10 @@ def main():
 
     # set item score in train set to `0` in validation
     args.train_matrix = valid_rating_matrix
+
+    args.item_freq_class = item_freq_class
+
+    args.item_graph = item_graph
 
     # save model
     checkpoint = args_str + '.pt'
@@ -159,11 +180,13 @@ def main():
     test_sampler = SequentialSampler(test_dataset)
     test_dataloader = DataLoader(test_dataset, sampler=test_sampler, batch_size=args.batch_size)
 
+    writer = SummaryWriter(f"/home/zzx/seqRec/CLTrys/CoSeRec/logs/{args.data_name}/CoSeRec2_{args.model_idx}", comment=f"CoSeRec2_{args.similarity_model_name}_{args.cf_weight}")
 
     model = SASRecModel(args=args)
 
     trainer = CoSeRecTrainer(model, train_dataloader, eval_dataloader,
-                              test_dataloader, args)
+                              test_dataloader, args,
+                              writer=writer)
 
 
     if args.do_eval:
@@ -187,7 +210,7 @@ def main():
         print('---------------Change to test_rating_matrix!-------------------')
         # load the best model
         trainer.model.load_state_dict(torch.load(args.checkpoint_path))
-        scores, result_info = trainer.test(0, full_sort=True)
+        scores, result_info = trainer.test(epoch+1, full_sort=True)
 
     print(args_str)
     print(result_info)

@@ -10,6 +10,8 @@ from scipy.sparse import csr_matrix
 
 import torch
 import torch.nn.functional as F
+from collections import defaultdict
+
 
 def set_seed(seed):
     random.seed(seed)
@@ -318,3 +320,28 @@ def idcg_k(k):
     else:
         return res
 
+def process_item_frequency(data_file):
+    lines = open(data_file).readlines()
+    user_seq = []
+    item_frequency = defaultdict(int)
+
+    for line in lines:
+        user, items = line.strip().split(' ', 1)
+        items = items.split(' ')
+        items = [int(item) for item in items]
+        user_seq.append(items)
+        
+    for seq in user_seq:
+        for each_item in seq:
+            item_frequency[each_item] +=1
+    
+    # 分成 高频、中频、低频三个部分
+    values = sorted(item_frequency.items(), key=lambda item: item[1], reverse=True)
+    high_freq = np.array([each[0] for each in values[:int(len(values)/3)]]) # 记为2 
+    mid_freq = np.array([each[0] for each in values[int(len(values)/3): 2*int(len(values)/3)]]) # 记为1
+    low_freq = np.array([each[0] for each in values[2*int(len(values)/3):]]) # 记为0
+    item_freq_class = np.zeros(len(item_frequency)+2, dtype=np.int32)
+    item_freq_class[mid_freq] = 1
+    item_freq_class[high_freq] = 2
+    item_freq_class[0] = -1 
+    return item_frequency, (high_freq, mid_freq, low_freq), item_freq_class

@@ -16,6 +16,7 @@ class SASRecModel(nn.Module):
     def __init__(self, args):
         super(SASRecModel, self).__init__()
         self.item_embeddings = nn.Embedding(args.item_size, args.hidden_size, padding_idx=0)
+        self.freq_embeddings = nn.Embedding(3, args.hidden_size, padding_idx=0)
         self.position_embeddings = nn.Embedding(args.max_seq_length, args.hidden_size)
         self.item_encoder = Encoder(args)
         self.LayerNorm = LayerNorm(args.hidden_size, eps=1e-12)
@@ -25,9 +26,27 @@ class SASRecModel(nn.Module):
         self.criterion = nn.BCELoss(reduction='none')
         self.apply(self.init_weights)
 
+        self.item_freq_class = torch.tensor(self.args.item_freq_class)
+        if self.args.cuda_condition:
+            self.item_freq_class = self.item_freq_class.cuda()
+    
+    def get_item_embeddings(self, item_ids=None):
+        # 
+        if item_ids is None:
+            item_ids = torch.arange(0, self.args.item_size)
+            if self.args.cuda_condition:
+                item_ids = item_ids.cuda()
+        
+        item_embeddings = self.item_embeddings(item_ids)
+        input_freq = self.item_freq_class[item_ids.detach()]
+        input_freq[input_freq==-1] = 0 
+        freq_embeddings = self.freq_embeddings(input_freq)
+        item_embeddings += freq_embeddings
+        return item_embeddings
+
 
     # Positional Embedding
-    def add_position_embedding(self, sequence):
+    def add_position_embedding(self, sequence, input_freq):
 
         seq_length = sequence.size(1)
         position_ids = torch.arange(seq_length, dtype=torch.long, device=sequence.device)
@@ -35,13 +54,24 @@ class SASRecModel(nn.Module):
         item_embeddings = self.item_embeddings(sequence)
         position_embeddings = self.position_embeddings(position_ids)
         sequence_emb = item_embeddings + position_embeddings
+
+        input_freq = self.item_freq_class[sequence.detach()]
+        input_freq[input_freq==-1] = 0 
+        freq_embeddings = self.freq_embeddings(input_freq)
+        sequence_emb += freq_embeddings
+        # 再加一个高/中/低频信息
+        # if input_freq is not None:
+        #     input_freq[input_freq==-1] = 0
+        #     freq_embeddings = self.freq_embeddings(input_freq)
+        #     sequence_emb += freq_embeddings
+
         sequence_emb = self.LayerNorm(sequence_emb)
         sequence_emb = self.dropout(sequence_emb)
 
         return sequence_emb
 
     # model same as SASRec
-    def transformer_encoder(self, input_ids):
+    def transformer_encoder(self, input_ids, input_freq=None):
 
         attention_mask = (input_ids > 0).long()
         extended_attention_mask = attention_mask.unsqueeze(1).unsqueeze(2) # torch.int64
@@ -58,7 +88,8 @@ class SASRecModel(nn.Module):
         extended_attention_mask = extended_attention_mask.to(dtype=next(self.parameters()).dtype) # fp16 compatibility
         extended_attention_mask = (1.0 - extended_attention_mask) * -10000.0
 
-        sequence_emb = self.add_position_embedding(input_ids)
+        sequence_emb = self.add_position_embedding(input_ids, input_freq)
+        
 
         item_encoded_layers = self.item_encoder(sequence_emb,
                                                 extended_attention_mask,

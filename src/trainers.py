@@ -8,6 +8,8 @@ import torch
 import torch.nn as nn
 from torch.optim import Adam
 
+import dgl
+
 from torch.utils.data import DataLoader, RandomSampler
 from datasets import RecWithContrastiveLearningDataset
 from modules import NCELoss, NTXent
@@ -95,13 +97,14 @@ class Trainer:
             f.write(str(post_fix) + '\n')
         return [HIT_1, NDCG_1, HIT_5, NDCG_5, HIT_10, NDCG_10, MRR], str(post_fix)
 
-    def get_full_sort_score(self, epoch, answers, pred_list):
+    def get_full_sort_score(self, epoch, answers, pred_list, name=""):
         recall, ndcg = [], []
         for k in [5, 10, 15, 20]:
             recall.append(recall_at_k(answers, pred_list, k))
             ndcg.append(ndcg_k(answers, pred_list, k))
         post_fix = {
             "Epoch": epoch,
+            "name": name,
             "HIT@5": '{:.4f}'.format(recall[0]), "NDCG@5": '{:.4f}'.format(ndcg[0]),
             "HIT@10": '{:.4f}'.format(recall[1]), "NDCG@10": '{:.4f}'.format(ndcg[1]),
             "HIT@20": '{:.4f}'.format(recall[3]), "NDCG@20": '{:.4f}'.format(ndcg[3])
@@ -120,8 +123,11 @@ class Trainer:
 
     def cross_entropy(self, seq_out, pos_ids, neg_ids):
         # [batch seq_len hidden_size]
-        pos_emb = self.model.item_embeddings(pos_ids)
-        neg_emb = self.model.item_embeddings(neg_ids)
+        # pos_emb = self.model.item_embeddings(pos_ids)
+        # neg_emb = self.model.item_embeddings(neg_ids)
+        pos_emb = self.model.get_item_embeddings(pos_ids)
+        neg_emb = self.model.get_item_embeddings(neg_ids)
+        
         # [batch*seq_len hidden_size]
         pos = pos_emb.view(-1, pos_emb.size(2))
         neg = neg_emb.view(-1, neg_emb.size(2))
@@ -136,16 +142,33 @@ class Trainer:
 
         return loss
 
+    def cross_entropy_2(self, seq_out, pos_ids, neg_ids):
+        # pos_emb = self.model.item_embeddings(pos_ids)
+        # neg_emb = self.model.item_embeddings(neg_ids)
+        pos_emb = self.model.get_item_embeddings(pos_ids)
+        neg_emb = self.model.get_item_embeddings(neg_ids)
+        pos = pos_emb.view(-1, pos_emb.size(2))
+        neg = neg_emb.view(-1, neg_emb.size(2))
+        seq_emb = seq_out.view(-1, self.args.hidden_size)
+        istarget = (pos_ids > 0).view(pos_ids.size(0) * self.model.args.max_seq_length) # [batch*seq_len]
+        pos = pos[istarget]
+        neg = neg[istarget]
+        seq_emb = seq_emb[istarget]
+        return self.cf_criterion(seq_emb, pos)
+
     def predict_sample(self, seq_out, test_neg_sample):
         # [batch 100 hidden_size]
-        test_item_emb = self.model.item_embeddings(test_neg_sample)
+        # test_item_emb = self.model.item_embeddings(test_neg_sample)
+        test_item_emb = self.model.get_item_embeddings(test_neg_sample)
+        
         # [batch hidden_size]
         test_logits = torch.bmm(test_item_emb, seq_out.unsqueeze(-1)).squeeze(-1)  # [B 100]
         return test_logits
 
     def predict_full(self, seq_out):
         # [item_num hidden_size]
-        test_item_emb = self.model.item_embeddings.weight
+        # test_item_emb = self.model.item_embeddings.weight
+        test_item_emb = self.model.get_item_embeddings()
         # [batch hidden_size ]
         rating_pred = torch.matmul(seq_out, test_item_emb.transpose(0, 1))
         return rating_pred
@@ -156,7 +179,8 @@ class CoSeRecTrainer(Trainer):
                  train_dataloader,
                  eval_dataloader,
                  test_dataloader, 
-                 args):
+                 args,
+                 writer):
         super(CoSeRecTrainer, self).__init__(
             model,
             train_dataloader,
@@ -164,6 +188,7 @@ class CoSeRecTrainer(Trainer):
             test_dataloader, 
             args
         )
+        self.writer = writer
 
     def _one_pair_contrastive_learning(self, inputs):
         '''
@@ -182,6 +207,21 @@ class CoSeRecTrainer(Trainer):
                                 cl_output_slice[1])
         return cl_loss
 
+    def item_info_NCE(self, src_ids, dst_ids):
+        src_emb = self.model.item_embeddings(src_ids)
+        dst_emb = self.model.item_embeddings(dst_ids)
+        
+        # 为了防止显存爆掉，batch_size手动设置一下
+        batch_size = 256
+        src_emb_list = torch.split(src_emb, batch_size)
+        dst_emb_list = torch.split(dst_emb, batch_size)
+
+        cl_loss = 0.0
+        for i in range(len(src_emb_list)):
+            cl_loss += self.cf_criterion(src_emb_list[i], 
+                                dst_emb_list[i])
+        return cl_loss/len(src_emb_list)
+
     def iteration(self, epoch, dataloader, full_sort=True, train=True):
 
         str_code = "train" if train else "test"
@@ -194,6 +234,7 @@ class CoSeRecTrainer(Trainer):
             cl_individual_avg_losses = [0.0 for i in range(self.total_augmentaion_pairs)]
             cl_sum_avg_loss = 0.0
             joint_avg_loss = 0.0
+            itemcl_sum_avg_loss = 0.0
 
             print(f"rec dataset length: {len(dataloader)}")
             rec_cf_data_iter = tqdm(enumerate(dataloader), total=len(dataloader))
@@ -206,19 +247,48 @@ class CoSeRecTrainer(Trainer):
                 '''
                 # 0. batch_data will be sent into the device(GPU or CPU)
                 rec_batch = tuple(t.to(self.device) for t in rec_batch)
-                _, input_ids, target_pos, target_neg, _ = rec_batch
+                _, input_ids, input_freq, target_pos, target_neg, _ = rec_batch
 
                 # ---------- recommendation task ---------------#
-                sequence_output = self.model.transformer_encoder(input_ids)
-                rec_loss = self.cross_entropy(sequence_output, target_pos, target_neg)
+                sequence_output = self.model.transformer_encoder(input_ids, input_freq)
+                if self.args.multi_neg:
+                    rec_loss = self.cross_entropy_2(sequence_output, target_pos, target_neg)
+                else:
+                    rec_loss = self.cross_entropy(sequence_output, target_pos, target_neg)
+
+
 
                 # ---------- contrastive learning task -------------#
                 cl_losses = []
-                for cl_batch in cl_batches:
-                    cl_loss = self._one_pair_contrastive_learning(cl_batch)
-                    cl_losses.append(cl_loss)
+                if self.args.cl:
+                    for cl_batch in cl_batches:
+                        cl_loss = self._one_pair_contrastive_learning(cl_batch)
+                        cl_losses.append(cl_loss)
 
-                joint_loss = self.args.rec_weight * rec_loss
+
+                joint_loss = 0
+                
+                # 在item表征 上加一个item 表征的约束 应用对比学习损失
+                # 先把这个对比损失注释掉  没有效果
+                # if self.args.item_graph is not None:
+                #     # target_pos
+                #     nonzero_indices = torch.nonzero(target_pos)
+                #     item_ids = target_pos[nonzero_indices[:, 0], nonzero_indices[:, 1]]
+                #     item_ids = item_ids.view(-1)
+
+                #     num_neighbors = 2
+                #     sampled_graph = dgl.sampling.sample_neighbors(self.args.item_graph, item_ids, num_neighbors, edge_dir="out")
+                #     # 获取采样后的邻居
+                #     sampled_edges = sampled_graph.edges()
+                #     src, dst = sampled_edges
+                #     # 形成一个infoNCE 损失
+                #     loss_item_cl = self.item_info_NCE(src, dst)
+                #     # 更好的方式是 形成一个待检索的dictionary
+                #     # 
+                #     joint_loss += 0.1*loss_item_cl
+                #     itemcl_sum_avg_loss += loss_item_cl.item()
+
+                joint_loss += self.args.rec_weight * rec_loss
                 for cl_loss in cl_losses:
                     joint_loss += self.args.cf_weight * cl_loss
                 self.optim.zero_grad()
@@ -238,6 +308,7 @@ class CoSeRecTrainer(Trainer):
                 "rec_avg_loss": '{:.4f}'.format(rec_avg_loss / len(rec_cf_data_iter)),
                 "joint_avg_loss": '{:.4f}'.format(joint_avg_loss / len(rec_cf_data_iter)),
                 "cl_avg_loss": '{:.4f}'.format(cl_sum_avg_loss / (len(rec_cf_data_iter)*self.total_augmentaion_pairs)),
+                "itemcl_loss": '{:.4f}'.format(itemcl_sum_avg_loss / (len(rec_cf_data_iter))),
             }
             for i, cl_individual_avg_loss in enumerate(cl_individual_avg_losses):
                 post_fix['cl_pair_'+str(i)+'_loss'] = '{:.4f}'.format(cl_individual_avg_loss / len(rec_cf_data_iter))
@@ -247,6 +318,11 @@ class CoSeRecTrainer(Trainer):
 
             with open(self.args.log_file, 'a') as f:
                 f.write(str(post_fix) + '\n')
+            
+            self.writer.add_scalar(tag="loss/train rec loss", scalar_value=rec_avg_loss / len(rec_cf_data_iter), global_step = epoch)
+            self.writer.add_scalar(tag="loss/train cl loss", scalar_value=cl_sum_avg_loss / (len(rec_cf_data_iter)*self.total_augmentaion_pairs), global_step = epoch)
+            self.writer.add_scalar(tag="loss/train loss", scalar_value=rec_avg_loss / len(rec_cf_data_iter), global_step = epoch)
+            self.writer.add_scalar(tag="loss/itemcl loss", scalar_value=itemcl_sum_avg_loss / len(rec_cf_data_iter), global_step = epoch)
 
         else:
             rec_data_iter = tqdm(enumerate(dataloader),
@@ -262,7 +338,7 @@ class CoSeRecTrainer(Trainer):
                 for i, batch in rec_data_iter:
                     # 0. batch_data will be sent into the device(GPU or cpu)
                     batch = tuple(t.to(self.device) for t in batch)
-                    user_ids, input_ids, target_pos, target_neg, answers = batch
+                    user_ids, input_ids, _, target_pos, target_neg, answers = batch
                     recommend_output = self.model.transformer_encoder(input_ids)
 
                     recommend_output = recommend_output[:, -1, :]
@@ -286,7 +362,22 @@ class CoSeRecTrainer(Trainer):
                     else:
                         pred_list = np.append(pred_list, batch_pred_list, axis=0)
                         answer_list = np.append(answer_list, answers.cpu().data.numpy(), axis=0)
-                return self.get_full_sort_score(epoch, answer_list, pred_list)
+
+                answer_class_list = self.args.item_freq_class[answer_list.squeeze()]
+                head_tail = {
+                    "high_freq": np.argwhere(answer_class_list==2).squeeze(),
+                    "mid_freq": np.argwhere(answer_class_list==1).squeeze(),
+                    "low_freq": np.argwhere(answer_class_list==0).squeeze(),
+                }
+                for key in head_tail:
+                    indexes = head_tail[key]
+                    answer_list_part, pred_list_part = answer_list[indexes], pred_list[indexes]
+                    result_part = self.get_full_sort_score(epoch, answer_list_part, pred_list_part, name=key)
+                    self.writer.add_scalar(tag=f"NDCG@20/{key}", scalar_value=result_part[0][5], global_step = epoch)
+                
+                result = self.get_full_sort_score(epoch, answer_list, pred_list, name="all")
+                self.writer.add_scalar(tag=f"NDCG@20/all", scalar_value=result[0][5], global_step = epoch)
+                return result    
 
             else:
                 for i, batch in rec_data_iter:

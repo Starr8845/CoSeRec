@@ -5,7 +5,8 @@ from torch.utils.data import Dataset
 from data_augmentation import Crop, Mask, Reorder, Substitute, Insert, Random, CombinatorialEnumerate
 from utils import neg_sample, nCr
 import copy
-
+import numpy as np
+import dgl
 
 class RecWithContrastiveLearningDataset(Dataset):
     def __init__(self, args, user_seq, test_neg_items=None, data_type='train', 
@@ -105,15 +106,50 @@ class RecWithContrastiveLearningDataset(Dataset):
                 torch.tensor(test_samples, dtype=torch.long),
             )
         else:
+            freq = self._add_frequency(copied_input_ids)
+            # low_mid_index = np.nonzero((freq==1) | (freq==0) )[0][:10]
+            # sampled_neighbors, neighbors_mask = self.sample_neighbors(np.array(copied_input_ids)[low_mid_index]) # 对中低频物品进行邻居采样
+            
             cur_rec_tensors = (
                 torch.tensor(user_id, dtype=torch.long),  # user_id for testing
                 torch.tensor(copied_input_ids, dtype=torch.long),
+                torch.tensor(freq, dtype=torch.long),
                 torch.tensor(target_pos, dtype=torch.long),
                 torch.tensor(target_neg, dtype=torch.long),
                 torch.tensor(answer, dtype=torch.long),
             )
 
         return cur_rec_tensors
+
+    def _add_frequency(self, input_ids):
+        return self.args.item_freq_class[input_ids]
+        freq = np.zeros((self.max_len), dtype=np.int32)
+        for i in range(len(input_ids)):
+            if self.args.item_freq_class[input_ids[i]]==1:
+                freq[i] = 1
+            elif self.args.item_freq_class[input_ids[i]]==2:
+                freq[i] = 2
+        return freq
+    
+    def sample_neighbors(self, low_mid_ids):
+        # e.g. 设每个sequence最多有10个中低频物品， 对每个中低频物品采样10个邻居，→长度为100的序列
+        num_neighbors = 10
+        result = torch.zeros((10, num_neighbors), dtype=torch.long)
+        mask = torch.zeros((10, num_neighbors), dtype=torch.long)
+        for i, item_id in enumerate(low_mid_ids):
+            sampled_graph = dgl.sampling.sample_neighbors(self.args.item_graph, [item_id], num_neighbors, edge_dir="out")
+            sampled_edges = sampled_graph.edges()
+            src, dst = sampled_edges
+            
+            if len(dst)>=10:
+                result[i,:] = dst[:10]
+                mask[i,:] = 1
+            elif len(dst)>0:
+                result[i, :len(dst)] = dst
+                mask[i, :len(dst)] = 1
+        return result, mask
+        
+
     def _add_noise_interactions(self, items):
         copied_sequence = copy.deepcopy(items)
         insert_nums = max(int(self.args.noise_ratio*len(copied_sequence)), 0)
@@ -131,6 +167,7 @@ class RecWithContrastiveLearningDataset(Dataset):
         return inserted_sequence
 
     def __getitem__(self, index):
+        # 在这里应该同时给出频率信息  以及对应的相似item的信息
         user_id = index
         items = self.user_seq[index]
 

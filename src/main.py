@@ -8,11 +8,11 @@ import argparse
 
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
 
-from datasets import RecWithContrastiveLearningDataset
+from datasets import RecWithContrastiveLearningDataset, ExtendDataset
 
 from trainers import CoSeRecTrainer
 from models import SASRecModel, OfflineItemSimilarity, OnlineItemSimilarity
-from utils import EarlyStopping, get_user_seqs, get_item2attribute_json, check_path, set_seed, process_item_frequency
+from utils import EarlyStopping, get_user_seqs, get_item2attribute_json, check_path, set_seed, process_item_frequency, extend_user_seqs_train, extend_user_seqs_valid
 from build_graph import build_sim_graph
 
 from torch.utils.tensorboard import SummaryWriter  
@@ -103,6 +103,7 @@ def main():
 
     parser.add_argument("--cl", action="store_true")
     parser.add_argument("--multi_neg", action="store_true")
+    parser.add_argument("--use_freq", action="store_true")
 
 
     args = parser.parse_args()
@@ -118,6 +119,12 @@ def main():
     user_seq, max_item, valid_rating_matrix, test_rating_matrix = \
         get_user_seqs(args.data_file)
     
+    # 要把user_seq展开  从而方便一些算法的实现
+
+    extended_user_seq_train = extend_user_seqs_train(user_seq)
+
+    extended_user_seq_valid = extend_user_seqs_valid(user_seq)
+    
     item_frequency, (high_freq, mid_freq, low_freq), item_freq_class = process_item_frequency(args.data_file) 
     
     # 在这里把item-item CF graph读进来，在data loader里去做改动  
@@ -125,7 +132,6 @@ def main():
     # print(item_graph)
     # exit(-1)
     item_graph = item_graph.to('cuda')
-
 
 
     args.item_size = max_item + 2
@@ -166,21 +172,24 @@ def main():
     args.online_similarity_model = online_similarity_model
 
     # training data for node classification
-    train_dataset = RecWithContrastiveLearningDataset(args, 
-                                    user_seq[:int(len(user_seq)*args.training_data_ratio)], \
-                                    data_type='train')
+    # train_dataset = RecWithContrastiveLearningDataset(args, 
+    #                                 user_seq[:int(len(user_seq)*args.training_data_ratio)], \
+    #                                 data_type='train')
+    train_dataset = ExtendDataset(args, extended_user_seq_train)
     train_sampler = RandomSampler(train_dataset)
     train_dataloader = DataLoader(train_dataset, sampler=train_sampler, batch_size=args.batch_size)
 
-    eval_dataset = RecWithContrastiveLearningDataset(args, user_seq, data_type='valid')
+    # eval_dataset = RecWithContrastiveLearningDataset(args, user_seq, data_type='valid')
+    eval_dataset = ExtendDataset(args, extended_user_seq_valid)
     eval_sampler = SequentialSampler(eval_dataset)
     eval_dataloader = DataLoader(eval_dataset, sampler=eval_sampler, batch_size=args.batch_size)
 
-    test_dataset = RecWithContrastiveLearningDataset(args, user_seq, data_type='test')
+    # test_dataset = RecWithContrastiveLearningDataset(args, user_seq, data_type='test')
+    test_dataset = ExtendDataset(args, user_seq)
     test_sampler = SequentialSampler(test_dataset)
     test_dataloader = DataLoader(test_dataset, sampler=test_sampler, batch_size=args.batch_size)
 
-    writer = SummaryWriter(f"/home/zzx/seqRec/CLTrys/CoSeRec/logs/{args.data_name}/CoSeRec2_{args.model_idx}", comment=f"CoSeRec2_{args.similarity_model_name}_{args.cf_weight}")
+    writer = SummaryWriter(f"/home/zzx/seqRec/CLTrys/CoSeRec/logs/{args.data_name}/CoSeRec_single_{args.model_idx}", comment=f"CoSeRec2_{args.similarity_model_name}_{args.cf_weight}")
 
     model = SASRecModel(args=args)
 

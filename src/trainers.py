@@ -122,38 +122,31 @@ class Trainer:
         self.model.load_state_dict(torch.load(file_name))
 
     def cross_entropy(self, seq_out, pos_ids, neg_ids):
-        # [batch seq_len hidden_size]
+        # seq_out: [bs, 64]
         # pos_emb = self.model.item_embeddings(pos_ids)
         # neg_emb = self.model.item_embeddings(neg_ids)
-        pos_emb = self.model.get_item_embeddings(pos_ids)
-        neg_emb = self.model.get_item_embeddings(neg_ids)
+        pos_emb = self.model.get_item_embeddings(pos_ids) # [bs, 1, 64]
+        neg_emb = self.model.get_item_embeddings(neg_ids) # [bs, 1, 64]
         
         # [batch*seq_len hidden_size]
-        pos = pos_emb.view(-1, pos_emb.size(2))
-        neg = neg_emb.view(-1, neg_emb.size(2))
-        seq_emb = seq_out.view(-1, self.args.hidden_size) # [batch*seq_len hidden_size]
-        pos_logits = torch.sum(pos * seq_emb, -1) # [batch*seq_len]
-        neg_logits = torch.sum(neg * seq_emb, -1)
-        istarget = (pos_ids > 0).view(pos_ids.size(0) * self.model.args.max_seq_length).float() # [batch*seq_len]
-        loss = torch.sum(
-            - torch.log(torch.sigmoid(pos_logits) + 1e-24) * istarget -
-            torch.log(1 - torch.sigmoid(neg_logits) + 1e-24) * istarget
-        ) / torch.sum(istarget)
+        pos = pos_emb.view(-1, pos_emb.size(2)) # [bs, 64]
+        neg = neg_emb.view(-1, neg_emb.size(2)) # [bs, 64]
+        
+        pos_logits = torch.sum(pos * seq_out, -1) # [batch*seq_len]
+        neg_logits = torch.sum(neg * seq_out, -1)
+        loss = torch.mean(
+            - torch.log(torch.sigmoid(pos_logits) + 1e-24) -
+            torch.log(1 - torch.sigmoid(neg_logits) + 1e-24)
+        )
 
         return loss
 
     def cross_entropy_2(self, seq_out, pos_ids, neg_ids):
-        # pos_emb = self.model.item_embeddings(pos_ids)
-        # neg_emb = self.model.item_embeddings(neg_ids)
         pos_emb = self.model.get_item_embeddings(pos_ids)
         neg_emb = self.model.get_item_embeddings(neg_ids)
-        pos = pos_emb.view(-1, pos_emb.size(2))
-        neg = neg_emb.view(-1, neg_emb.size(2))
-        seq_emb = seq_out.view(-1, self.args.hidden_size)
-        istarget = (pos_ids > 0).view(pos_ids.size(0) * self.model.args.max_seq_length) # [batch*seq_len]
-        pos = pos[istarget]
-        neg = neg[istarget]
-        seq_emb = seq_emb[istarget]
+        pos = pos_emb.view(-1, pos_emb.size(2)) #[256, 64]
+        neg = neg_emb.view(-1, neg_emb.size(2)) #[256, 64]
+        seq_emb = seq_out.view(-1, self.args.hidden_size) #[256, 64]
         return self.cf_criterion(seq_emb, pos)
 
     def predict_sample(self, seq_out, test_neg_sample):
@@ -239,7 +232,8 @@ class CoSeRecTrainer(Trainer):
             print(f"rec dataset length: {len(dataloader)}")
             rec_cf_data_iter = tqdm(enumerate(dataloader), total=len(dataloader))
 
-            for i, (rec_batch, cl_batches) in rec_cf_data_iter:
+            # for i, (rec_batch, cl_batches) in rec_cf_data_iter:
+            for i, rec_batch in rec_cf_data_iter:
                 '''
                 rec_batch shape: key_name x batch_size x feature_dim
                 cl_batches shape: 
@@ -247,16 +241,41 @@ class CoSeRecTrainer(Trainer):
                 '''
                 # 0. batch_data will be sent into the device(GPU or CPU)
                 rec_batch = tuple(t.to(self.device) for t in rec_batch)
-                _, input_ids, input_freq, target_pos, target_neg, _ = rec_batch
+                _, input_ids, target_pos, target_neg, low_mid_index, sampled_neighbors, low_mid_mask, neighbors_mask = rec_batch
 
                 # ---------- recommendation task ---------------#
-                sequence_output = self.model.transformer_encoder(input_ids, input_freq)
+                sequence_output_all_pos = self.model.transformer_encoder(input_ids, all_pos=True)
+                sequence_output = sequence_output_all_pos[:, -1, :]
                 if self.args.multi_neg:
                     rec_loss = self.cross_entropy_2(sequence_output, target_pos, target_neg)
                 else:
                     rec_loss = self.cross_entropy(sequence_output, target_pos, target_neg)
+                # zzx: sequence_output: [bs, 64]
+                # target_pos, target_neg: [bs, 1]
 
+                joint_loss = 0
 
+                # ---------- consistency learning task -------------#
+                # 这里做一下consistency learning 
+                # 重新写，先实现一个只有1个low/mid item的情况
+                # sampled_neighbors: [256, 1, 10]
+                neighbors_emb = self.model.get_item_embeddings(sampled_neighbors) #[256, 1, 10, 64]
+                # 简单起见，直接取平均
+                masked_nei_emb = torch.mean(neighbors_emb, dim=2).reshape(-1, self.args.hidden_size)
+                # mask_expanded = neighbors_mask.unsqueeze(3).float()   #[256, 1, 10, 1]
+                # masked_nei_emb = neighbors_emb * mask_expanded  
+
+                # # 求和后除以每个样本(mask=1的个数)
+                # summed = masked_nei_emb.sum(2)
+                # counts = neighbors_mask.sum(2, keepdim=True)
+                # masked_nei_emb = summed / counts # [256, 1, 64]
+                # masked_nei_emb = masked_nei_emb.reshape(-1, self.args.hidden_size) #[256, 64]
+                
+                left = sequence_output_all_pos[low_mid_mask==1, low_mid_index[low_mid_mask==1].view(-1), :]
+                
+                right = masked_nei_emb[low_mid_mask==1]
+                consistency_loss = self.cf_criterion(left, right)
+                joint_loss += 0.1*consistency_loss
 
                 # ---------- contrastive learning task -------------#
                 cl_losses = []
@@ -264,9 +283,6 @@ class CoSeRecTrainer(Trainer):
                     for cl_batch in cl_batches:
                         cl_loss = self._one_pair_contrastive_learning(cl_batch)
                         cl_losses.append(cl_loss)
-
-
-                joint_loss = 0
                 
                 # 在item表征 上加一个item 表征的约束 应用对比学习损失
                 # 先把这个对比损失注释掉  没有效果
@@ -338,13 +354,15 @@ class CoSeRecTrainer(Trainer):
                 for i, batch in rec_data_iter:
                     # 0. batch_data will be sent into the device(GPU or cpu)
                     batch = tuple(t.to(self.device) for t in batch)
-                    user_ids, input_ids, _, target_pos, target_neg, answers = batch
-                    recommend_output = self.model.transformer_encoder(input_ids)
+                    # user_ids, input_ids, target_pos, target_neg = batch
+                    user_ids, input_ids, target_pos, target_neg, _, _, _, _ = batch
+                    answers = target_pos
+                    recommend_output = self.model.transformer_encoder(input_ids) # zzx: [bs, 64]
 
-                    recommend_output = recommend_output[:, -1, :]
+
                     # recommendation results
 
-                    rating_pred = self.predict_full(recommend_output)
+                    rating_pred = self.predict_full(recommend_output) # zzx: [bs, item_num]
 
                     rating_pred = rating_pred.cpu().data.numpy().copy()
                     batch_user_index = user_ids.cpu().numpy()

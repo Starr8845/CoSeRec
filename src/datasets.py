@@ -304,6 +304,95 @@ class SASRecDataset(Dataset):
     def __len__(self):
         return len(self.user_seq)
 
+
+class ExtendDataset(Dataset):
+    def __init__(self, args, extended_user_seq, test_neg_items=None):
+        self.args = args
+        self.extended_user_seq = extended_user_seq
+        self.test_neg_items = test_neg_items
+        self.max_len = args.max_seq_length
+    
+    def _data_sample_rec_task(self, index, items, input_ids, target_pos):
+        # make a deep copy to avoid original sequence be modified
+        # copied_input_ids = copy.deepcopy(input_ids)
+        target_neg = []
+        seq_set = set(items)
+        target_neg = neg_sample(seq_set, self.args.item_size)
+
+        pad_len = self.max_len - len(input_ids)
+        input_ids = [0] * pad_len + input_ids
+        input_ids = input_ids[-self.max_len:]
+        
+        assert len(input_ids) == self.max_len
+        freq = self._add_frequency(input_ids)
+        low_mid_index_ = np.nonzero((freq==1) | (freq==0) )[0][:10]
+        if len(low_mid_index_)>0:
+            # 随机采样一个
+            low_mid_index = np.array([random.choice(low_mid_index_)])
+            # low_mid_index = np.array([low_mid_index_[0]])
+            low_mid_mask = 1
+        else:
+            low_mid_index = np.array([0])
+            low_mid_mask = 0
+
+        sampled_neighbors, neighbors_mask = self.sample_neighbors(np.array(input_ids)[low_mid_index], max_num=1) # 对中低频物品进行邻居采样
+        
+        cur_rec_tensors = (
+            torch.tensor(index, dtype=torch.long), # 对valid和test有用
+            torch.tensor(input_ids, dtype=torch.long),
+            torch.tensor([target_pos], dtype=torch.long),
+            torch.tensor([target_neg], dtype=torch.long),
+            torch.tensor(low_mid_index, dtype=torch.long),
+            sampled_neighbors,
+            torch.tensor(low_mid_mask, dtype=torch.bool),
+            neighbors_mask
+        )
+
+        return cur_rec_tensors
+
+
+
+    def _add_frequency(self, input_ids):
+        return self.args.item_freq_class[input_ids]
+
+
+    def sample_neighbors(self, low_mid_ids, max_num=1):
+        # e.g. 设每个sequence最多有10个中低频物品， 对每个中低频物品采样10个邻居，→长度为100的序列
+        num_neighbors = 10
+        result = torch.zeros((max_num, num_neighbors), dtype=torch.long)
+        mask = torch.zeros((max_num, num_neighbors), dtype=torch.long)
+        for i, item_id in enumerate(low_mid_ids):
+            sampled_graph = dgl.sampling.sample_neighbors(self.args.item_graph, [item_id], num_neighbors, edge_dir="out")
+            sampled_edges = sampled_graph.edges()
+            src, dst = sampled_edges
+            
+            if len(dst)>=10:
+                result[i,:] = dst[:10]
+                mask[i,:] = 1
+            elif len(dst)>0:
+                result[i, :len(dst)] = dst
+                mask[i, :len(dst)] = 1
+        return result, mask
+        
+
+    def __getitem__(self, index):
+
+        items = self.extended_user_seq[index]
+
+        # [0, 1, 2, 3, 4, 5, 6]
+
+        # input_ids [0, 1, 2, 3, 4, 5]
+        # answer [6]
+        input_ids = items[:-1]
+        target_pos = items[-1]
+
+        return self._data_sample_rec_task(index, items, input_ids, target_pos)
+
+    def __len__(self):
+        return len(self.extended_user_seq)
+
+
+
 if __name__ == '__main__':
     import argparse
     from utils import get_user_seqs, set_seed

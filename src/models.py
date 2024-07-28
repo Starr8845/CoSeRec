@@ -38,15 +38,16 @@ class SASRecModel(nn.Module):
                 item_ids = item_ids.cuda()
         
         item_embeddings = self.item_embeddings(item_ids)
-        input_freq = self.item_freq_class[item_ids.detach()]
-        input_freq[input_freq==-1] = 0 
-        freq_embeddings = self.freq_embeddings(input_freq)
-        item_embeddings += freq_embeddings
+        if self.args.use_freq:
+            input_freq = self.item_freq_class[item_ids.detach()]
+            input_freq[input_freq==-1] = 0 
+            freq_embeddings = self.freq_embeddings(input_freq)
+            item_embeddings += freq_embeddings
         return item_embeddings
 
 
     # Positional Embedding
-    def add_position_embedding(self, sequence, input_freq):
+    def add_position_embedding(self, sequence):
 
         seq_length = sequence.size(1)
         position_ids = torch.arange(seq_length, dtype=torch.long, device=sequence.device)
@@ -54,48 +55,51 @@ class SASRecModel(nn.Module):
         item_embeddings = self.item_embeddings(sequence)
         position_embeddings = self.position_embeddings(position_ids)
         sequence_emb = item_embeddings + position_embeddings
-
-        input_freq = self.item_freq_class[sequence.detach()]
-        input_freq[input_freq==-1] = 0 
-        freq_embeddings = self.freq_embeddings(input_freq)
-        sequence_emb += freq_embeddings
-        # 再加一个高/中/低频信息
-        # if input_freq is not None:
-        #     input_freq[input_freq==-1] = 0
-        #     freq_embeddings = self.freq_embeddings(input_freq)
-        #     sequence_emb += freq_embeddings
+        if self.args.use_freq:
+            input_freq = self.item_freq_class[sequence.detach()]
+            input_freq[input_freq==-1] = 0 
+            freq_embeddings = self.freq_embeddings(input_freq)
+            sequence_emb += freq_embeddings
 
         sequence_emb = self.LayerNorm(sequence_emb)
         sequence_emb = self.dropout(sequence_emb)
 
         return sequence_emb
 
-    # model same as SASRec
-    def transformer_encoder(self, input_ids, input_freq=None):
-
+    def _transformer_encoder(self, input_ids):
         attention_mask = (input_ids > 0).long()
         extended_attention_mask = attention_mask.unsqueeze(1).unsqueeze(2) # torch.int64
         max_len = attention_mask.size(-1)
         attn_shape = (1, max_len, max_len)
-        subsequent_mask = torch.triu(torch.ones(attn_shape), diagonal=1) # torch.uint8
-        subsequent_mask = (subsequent_mask == 0).unsqueeze(1)
-        subsequent_mask = subsequent_mask.long()
+        # 这一点要不要注释 存疑 
+        # subsequent_mask = torch.triu(torch.ones(attn_shape), diagonal=1) # torch.uint8
+        # subsequent_mask = (subsequent_mask == 0).unsqueeze(1)
+        # subsequent_mask = subsequent_mask.long()
 
-        if self.args.cuda_condition:
-            subsequent_mask = subsequent_mask.cuda()
+        # if self.args.cuda_condition:
+        #     subsequent_mask = subsequent_mask.cuda()
 
-        extended_attention_mask = extended_attention_mask * subsequent_mask
+        # extended_attention_mask = extended_attention_mask * subsequent_mask
+        extended_attention_mask = extended_attention_mask
         extended_attention_mask = extended_attention_mask.to(dtype=next(self.parameters()).dtype) # fp16 compatibility
         extended_attention_mask = (1.0 - extended_attention_mask) * -10000.0
 
-        sequence_emb = self.add_position_embedding(input_ids, input_freq)
+        sequence_emb = self.add_position_embedding(input_ids)
         
 
-        item_encoded_layers = self.item_encoder(sequence_emb,
+        sequence_output = self.item_encoder(sequence_emb,
                                                 extended_attention_mask,
-                                                output_all_encoded_layers=True)
+                                                output_all_encoded_layers=False)
+        sequence_output = sequence_output[-1]
+        return sequence_output
 
-        sequence_output = item_encoded_layers[-1]
+    # model same as SASRec
+    def transformer_encoder(self, input_ids, all_pos=False):
+        sequence_output = self._transformer_encoder(input_ids)
+        if all_pos:
+            return sequence_output
+        sequence_output = sequence_output[:, -1, :]
+        # 这里是否要设置不同的projector, 待定 
         return sequence_output
 
     def init_weights(self, module):

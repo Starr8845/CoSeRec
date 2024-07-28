@@ -1,0 +1,53 @@
+                # zzx: sequence_output: [bs, 64]
+                # target_pos, target_neg: [bs, 1]
+
+                joint_loss = 0
+
+                # ---------- consistency learning task -------------#
+                # 这里做一下consistency learning 
+                neighbors_emb = self.model.get_item_embeddings(sampled_neighbors)  # [256, 10, 10, 64]
+                mask_expanded = neighbors_mask.unsqueeze(3).float()  # [256, 10, 10, 1]
+                masked_nei_emb = neighbors_emb * mask_expanded  # [256, 10, 10, 64]
+
+                # 求和后除以每个样本(mask=1的个数)
+                summed = masked_nei_emb.sum(2)
+                counts = neighbors_mask.sum(2, keepdim=True)
+                masked_nei_emb = summed / counts # [256, 10, 64]
+                # 从这里往后怎么写还需要再考虑一下
+                # 要按照low_mid_num来的
+
+                bs = sequence_output_all_pos.size(0)
+                
+                sequence_output_all_pos_flat = sequence_output_all_pos.view(bs * 50, 64)
+                # low_mid_mask: 256*50
+                low_mid_mask = low_mid_mask.view(bs*50, 1)
+
+                left = sequence_output_all_pos_flat[low_mid_mask==1]
+
+                consistency_loss = self.cf_criterion(left, masked_nei_emb)
+                joint_loss += 0.1*consistency_loss
+
+
+
+
+
+
+        low_mid_index = np.zeros(10, dtype=low_mid_index_.dtype)
+        low_mid_index[:low_mid_num] = low_mid_index_
+        sampled_neighbors, neighbors_mask = self.sample_neighbors(np.array(copied_input_ids)[low_mid_index]) # 对中低频物品进行邻居采样
+        # 生成一个mask 大小为 bs
+        low_mid_mask = np.zeros(10, dtype=np.bool_)
+        low_mid_mask[low_mid_index_] = 1
+        # for each in low_mid_index:
+        #     low_mid_mask[each] = 1
+        cur_rec_tensors = (
+            torch.tensor(index, dtype=torch.long), # 对valid和test有用
+            torch.tensor(input_ids, dtype=torch.long),
+            torch.tensor([target_pos], dtype=torch.long),
+            torch.tensor([target_neg], dtype=torch.long),
+            # torch.tensor(low_mid_index, dtype=torch.long),
+            # torch.tensor(low_mid_num),
+            sampled_neighbors,
+            torch.tensor(low_mid_mask, dtype=torch.bool),
+            neighbors_mask
+        )

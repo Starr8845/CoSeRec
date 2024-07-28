@@ -154,6 +154,23 @@ def get_user_seqs(data_file):
     test_rating_matrix = generate_rating_matrix_test(user_seq, num_users, num_items)
     return user_seq, max_item, valid_rating_matrix, test_rating_matrix
 
+
+def extend_user_seqs_train(user_seq):
+    extended_user_seq = []
+    for seq in user_seq:
+        for i in range(1, len(seq)-2):
+            extended_user_seq.append(seq[0:i+1])
+    return extended_user_seq
+
+def extend_user_seqs_valid(user_seq):
+    extended_user_seq = []
+    for seq in user_seq:
+        i = len(seq)-2
+        extended_user_seq.append(seq[0:i+1])
+    return extended_user_seq
+
+
+
 def get_user_seqs_long(data_file):
     lines = open(data_file).readlines()
     user_seq = []

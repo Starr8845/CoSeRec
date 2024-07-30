@@ -1,0 +1,1034 @@
+Using Cuda: True
+(18359, 18359)
+--------------------Configure Info:------------
+data_dir                       :                             ./data/
+output_dir                     :                             output/
+data_name                      :                 Sports_and_Outdoors
+do_eval                        :                                   0
+model_idx                      :             single_cl_mask_0.5_1024
+gpu_id                         :                                   0
+noise_ratio                    :                                 0.0
+training_data_ratio            :                                 1.0
+augment_threshold              :                                   4
+similarity_model_name          :                          ItemCF_IUF
+augmentation_warm_up_epoches   :                                 160
+base_augment_type              :                                mask
+augment_type_for_short         :                                 SIM
+tao                            :                                 0.2
+gamma                          :                                 0.5
+beta                           :                                 0.2
+substitute_rate                :                                 0.1
+insert_rate                    :                                 0.4
+max_insert_num_per_pos         :                                   1
+temperature                    :                                 1.0
+n_views                        :                                   2
+model_name                     :                             CoSeRec
+hidden_size                    :                                  64
+num_hidden_layers              :                                   2
+num_attention_heads            :                                   2
+hidden_act                     :                                gelu
+attention_probs_dropout_prob   :                                 0.5
+hidden_dropout_prob            :                                 0.5
+initializer_range              :                                0.02
+max_seq_length                 :                                  50
+lr                             :                               0.001
+batch_size                     :                                1024
+epochs                         :                                 300
+no_cuda                        :                                   0
+log_freq                       :                                   1
+seed                           :                                   1
+cf_weight                      :                                 0.1
+rec_weight                     :                                 1.0
+weight_decay                   :                                 0.0
+adam_beta1                     :                                 0.9
+adam_beta2                     :                               0.999
+cl                             :                                   1
+multi_neg                      :                                   0
+use_freq                       :                                   0
+mask_strategy                  :                              random
+cuda_condition                 :                                   1
+data_file                      :      ./data/Sports_and_Outdoors.txt
+item_size                      :                               18359
+mask_id                        :                               18358
+log_file                       : output/CoSeRec-Sports_and_Outdoors-single_cl_mask_0.5_1024.txt
+Similarity Model Type: offline
+short sequence augment type: SIM
+Augmentation methods for Long sequences: 5
+Augmentation methods for short sequences: 3
+Creating Contrastive Learning Dataset using 'mask' data augmentation
+Similarity Model Type: offline
+short sequence augment type: SIM
+Augmentation methods for Long sequences: 5
+Augmentation methods for short sequences: 3
+Creating Contrastive Learning Dataset using 'mask' data augmentation
+Similarity Model Type: offline
+short sequence augment type: SIM
+Augmentation methods for Long sequences: 5
+Augmentation methods for short sequences: 3
+Creating Contrastive Learning Dataset using 'mask' data augmentation
+Total Parameters: 1278464
+self.cf_criterion: NCELoss
+Train CoSeRec
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.74it/s]
+{'epoch': 0, 'rec_avg_loss': '1.2866', 'joint_avg_loss': '2.1211', 'cl_avg_loss': '8.3446', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '8.3446'}
+Recommendation EP_test:0: 100%|| 35/35 [00:06<00:00,  5.18it/s]
+{'Epoch': 0, 'name': 'high_freq', 'HIT@5': '0.0124', 'NDCG@5': '0.0080', 'HIT@10': '0.0215', 'NDCG@10': '0.0109', 'HIT@20': '0.0359', 'NDCG@20': '0.0146'}
+{'Epoch': 0, 'name': 'mid_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 0, 'name': 'low_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 0, 'name': 'all', 'HIT@5': '0.0084', 'NDCG@5': '0.0054', 'HIT@10': '0.0146', 'NDCG@10': '0.0074', 'HIT@20': '0.0244', 'NDCG@20': '0.0099'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 1, 'rec_avg_loss': '1.1954', 'joint_avg_loss': '1.8298', 'cl_avg_loss': '6.3435', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '6.3435'}
+Recommendation EP_test:1: 100%|| 35/35 [00:06<00:00,  5.13it/s]
+{'Epoch': 1, 'name': 'high_freq', 'HIT@5': '0.0116', 'NDCG@5': '0.0077', 'HIT@10': '0.0198', 'NDCG@10': '0.0103', 'HIT@20': '0.0360', 'NDCG@20': '0.0144'}
+{'Epoch': 1, 'name': 'mid_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 1, 'name': 'low_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 1, 'name': 'all', 'HIT@5': '0.0079', 'NDCG@5': '0.0052', 'HIT@10': '0.0135', 'NDCG@10': '0.0070', 'HIT@20': '0.0245', 'NDCG@20': '0.0098'}
+EarlyStopping counter: 1 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 2, 'rec_avg_loss': '1.1663', 'joint_avg_loss': '1.7379', 'cl_avg_loss': '5.7163', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '5.7163'}
+Recommendation EP_test:2: 100%|| 35/35 [00:07<00:00,  4.51it/s]
+{'Epoch': 2, 'name': 'high_freq', 'HIT@5': '0.0116', 'NDCG@5': '0.0075', 'HIT@10': '0.0208', 'NDCG@10': '0.0105', 'HIT@20': '0.0343', 'NDCG@20': '0.0139'}
+{'Epoch': 2, 'name': 'mid_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 2, 'name': 'low_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 2, 'name': 'all', 'HIT@5': '0.0079', 'NDCG@5': '0.0051', 'HIT@10': '0.0141', 'NDCG@10': '0.0071', 'HIT@20': '0.0233', 'NDCG@20': '0.0094'}
+EarlyStopping counter: 2 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.78it/s]
+{'epoch': 3, 'rec_avg_loss': '1.1456', 'joint_avg_loss': '1.6857', 'cl_avg_loss': '5.4011', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '5.4011'}
+Recommendation EP_test:3: 100%|| 35/35 [00:07<00:00,  4.59it/s]
+{'Epoch': 3, 'name': 'high_freq', 'HIT@5': '0.0116', 'NDCG@5': '0.0076', 'HIT@10': '0.0220', 'NDCG@10': '0.0109', 'HIT@20': '0.0374', 'NDCG@20': '0.0148'}
+{'Epoch': 3, 'name': 'mid_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 3, 'name': 'low_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 3, 'name': 'all', 'HIT@5': '0.0079', 'NDCG@5': '0.0051', 'HIT@10': '0.0150', 'NDCG@10': '0.0074', 'HIT@20': '0.0255', 'NDCG@20': '0.0100'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.80it/s]
+{'epoch': 4, 'rec_avg_loss': '1.1314', 'joint_avg_loss': '1.6538', 'cl_avg_loss': '5.2242', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '5.2242'}
+Recommendation EP_test:4: 100%|| 35/35 [00:07<00:00,  4.54it/s]
+{'Epoch': 4, 'name': 'high_freq', 'HIT@5': '0.0121', 'NDCG@5': '0.0076', 'HIT@10': '0.0217', 'NDCG@10': '0.0107', 'HIT@20': '0.0355', 'NDCG@20': '0.0142'}
+{'Epoch': 4, 'name': 'mid_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 4, 'name': 'low_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 4, 'name': 'all', 'HIT@5': '0.0083', 'NDCG@5': '0.0052', 'HIT@10': '0.0147', 'NDCG@10': '0.0073', 'HIT@20': '0.0242', 'NDCG@20': '0.0096'}
+EarlyStopping counter: 1 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 5, 'rec_avg_loss': '1.1167', 'joint_avg_loss': '1.6270', 'cl_avg_loss': '5.1026', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '5.1026'}
+Recommendation EP_test:5: 100%|| 35/35 [00:08<00:00,  4.24it/s]
+{'Epoch': 5, 'name': 'high_freq', 'HIT@5': '0.0124', 'NDCG@5': '0.0078', 'HIT@10': '0.0222', 'NDCG@10': '0.0110', 'HIT@20': '0.0367', 'NDCG@20': '0.0146'}
+{'Epoch': 5, 'name': 'mid_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 5, 'name': 'low_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 5, 'name': 'all', 'HIT@5': '0.0085', 'NDCG@5': '0.0053', 'HIT@10': '0.0151', 'NDCG@10': '0.0075', 'HIT@20': '0.0250', 'NDCG@20': '0.0099'}
+EarlyStopping counter: 2 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.81it/s]
+{'epoch': 6, 'rec_avg_loss': '1.0990', 'joint_avg_loss': '1.6025', 'cl_avg_loss': '5.0345', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '5.0345'}
+Recommendation EP_test:6: 100%|| 35/35 [00:07<00:00,  4.43it/s]
+{'Epoch': 6, 'name': 'high_freq', 'HIT@5': '0.0129', 'NDCG@5': '0.0079', 'HIT@10': '0.0216', 'NDCG@10': '0.0107', 'HIT@20': '0.0371', 'NDCG@20': '0.0146'}
+{'Epoch': 6, 'name': 'mid_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 6, 'name': 'low_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 6, 'name': 'all', 'HIT@5': '0.0088', 'NDCG@5': '0.0054', 'HIT@10': '0.0147', 'NDCG@10': '0.0073', 'HIT@20': '0.0253', 'NDCG@20': '0.0099'}
+EarlyStopping counter: 3 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 7, 'rec_avg_loss': '1.0799', 'joint_avg_loss': '1.5791', 'cl_avg_loss': '4.9922', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.9922'}
+Recommendation EP_test:7: 100%|| 35/35 [00:07<00:00,  4.61it/s]
+{'Epoch': 7, 'name': 'high_freq', 'HIT@5': '0.0131', 'NDCG@5': '0.0083', 'HIT@10': '0.0226', 'NDCG@10': '0.0113', 'HIT@20': '0.0387', 'NDCG@20': '0.0154'}
+{'Epoch': 7, 'name': 'mid_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 7, 'name': 'low_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 7, 'name': 'all', 'HIT@5': '0.0089', 'NDCG@5': '0.0057', 'HIT@10': '0.0154', 'NDCG@10': '0.0077', 'HIT@20': '0.0263', 'NDCG@20': '0.0104'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 8, 'rec_avg_loss': '1.0625', 'joint_avg_loss': '1.5581', 'cl_avg_loss': '4.9568', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.9568'}
+Recommendation EP_test:8: 100%|| 35/35 [00:07<00:00,  4.50it/s]
+{'Epoch': 8, 'name': 'high_freq', 'HIT@5': '0.0145', 'NDCG@5': '0.0090', 'HIT@10': '0.0254', 'NDCG@10': '0.0125', 'HIT@20': '0.0420', 'NDCG@20': '0.0166'}
+{'Epoch': 8, 'name': 'mid_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 8, 'name': 'low_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 8, 'name': 'all', 'HIT@5': '0.0098', 'NDCG@5': '0.0061', 'HIT@10': '0.0173', 'NDCG@10': '0.0085', 'HIT@20': '0.0286', 'NDCG@20': '0.0113'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 9, 'rec_avg_loss': '1.0390', 'joint_avg_loss': '1.5297', 'cl_avg_loss': '4.9070', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.9070'}
+Recommendation EP_test:9: 100%|| 35/35 [00:07<00:00,  4.48it/s]
+{'Epoch': 9, 'name': 'high_freq', 'HIT@5': '0.0154', 'NDCG@5': '0.0097', 'HIT@10': '0.0278', 'NDCG@10': '0.0137', 'HIT@20': '0.0468', 'NDCG@20': '0.0184'}
+{'Epoch': 9, 'name': 'mid_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 9, 'name': 'low_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 9, 'name': 'all', 'HIT@5': '0.0105', 'NDCG@5': '0.0066', 'HIT@10': '0.0189', 'NDCG@10': '0.0093', 'HIT@20': '0.0318', 'NDCG@20': '0.0125'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 10, 'rec_avg_loss': '1.0131', 'joint_avg_loss': '1.4995', 'cl_avg_loss': '4.8641', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.8641'}
+Recommendation EP_test:10: 100%|| 35/35 [00:08<00:00,  4.33it/s]
+{'Epoch': 10, 'name': 'high_freq', 'HIT@5': '0.0174', 'NDCG@5': '0.0110', 'HIT@10': '0.0309', 'NDCG@10': '0.0153', 'HIT@20': '0.0510', 'NDCG@20': '0.0203'}
+{'Epoch': 10, 'name': 'mid_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0004', 'NDCG@10': '0.0001', 'HIT@20': '0.0004', 'NDCG@20': '0.0001'}
+{'Epoch': 10, 'name': 'low_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 10, 'name': 'all', 'HIT@5': '0.0119', 'NDCG@5': '0.0075', 'HIT@10': '0.0211', 'NDCG@10': '0.0104', 'HIT@20': '0.0348', 'NDCG@20': '0.0139'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 11, 'rec_avg_loss': '0.9878', 'joint_avg_loss': '1.4704', 'cl_avg_loss': '4.8256', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.8256'}
+Recommendation EP_test:11: 100%|| 35/35 [00:08<00:00,  4.20it/s]
+{'Epoch': 11, 'name': 'high_freq', 'HIT@5': '0.0195', 'NDCG@5': '0.0122', 'HIT@10': '0.0346', 'NDCG@10': '0.0171', 'HIT@20': '0.0564', 'NDCG@20': '0.0226'}
+{'Epoch': 11, 'name': 'mid_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0004', 'NDCG@10': '0.0001', 'HIT@20': '0.0006', 'NDCG@20': '0.0002'}
+{'Epoch': 11, 'name': 'low_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 11, 'name': 'all', 'HIT@5': '0.0133', 'NDCG@5': '0.0083', 'HIT@10': '0.0236', 'NDCG@10': '0.0116', 'HIT@20': '0.0385', 'NDCG@20': '0.0154'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.80it/s]
+{'epoch': 12, 'rec_avg_loss': '0.9639', 'joint_avg_loss': '1.4450', 'cl_avg_loss': '4.8106', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.8106'}
+Recommendation EP_test:12: 100%|| 35/35 [00:08<00:00,  4.00it/s]
+{'Epoch': 12, 'name': 'high_freq', 'HIT@5': '0.0213', 'NDCG@5': '0.0133', 'HIT@10': '0.0375', 'NDCG@10': '0.0185', 'HIT@20': '0.0608', 'NDCG@20': '0.0244'}
+{'Epoch': 12, 'name': 'mid_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0006', 'NDCG@10': '0.0002', 'HIT@20': '0.0007', 'NDCG@20': '0.0002'}
+{'Epoch': 12, 'name': 'low_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 12, 'name': 'all', 'HIT@5': '0.0145', 'NDCG@5': '0.0091', 'HIT@10': '0.0256', 'NDCG@10': '0.0126', 'HIT@20': '0.0415', 'NDCG@20': '0.0166'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 13, 'rec_avg_loss': '0.9401', 'joint_avg_loss': '1.4182', 'cl_avg_loss': '4.7812', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.7812'}
+Recommendation EP_test:13: 100%|| 35/35 [00:08<00:00,  3.99it/s]
+{'Epoch': 13, 'name': 'high_freq', 'HIT@5': '0.0231', 'NDCG@5': '0.0141', 'HIT@10': '0.0417', 'NDCG@10': '0.0201', 'HIT@20': '0.0655', 'NDCG@20': '0.0261'}
+{'Epoch': 13, 'name': 'mid_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0006', 'NDCG@10': '0.0002', 'HIT@20': '0.0009', 'NDCG@20': '0.0003'}
+{'Epoch': 13, 'name': 'low_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 13, 'name': 'all', 'HIT@5': '0.0157', 'NDCG@5': '0.0096', 'HIT@10': '0.0285', 'NDCG@10': '0.0137', 'HIT@20': '0.0447', 'NDCG@20': '0.0178'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.80it/s]
+{'epoch': 14, 'rec_avg_loss': '0.9200', 'joint_avg_loss': '1.3954', 'cl_avg_loss': '4.7544', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.7544'}
+Recommendation EP_test:14: 100%|| 35/35 [00:08<00:00,  4.00it/s]
+{'Epoch': 14, 'name': 'high_freq', 'HIT@5': '0.0242', 'NDCG@5': '0.0150', 'HIT@10': '0.0422', 'NDCG@10': '0.0208', 'HIT@20': '0.0684', 'NDCG@20': '0.0274'}
+{'Epoch': 14, 'name': 'mid_freq', 'HIT@5': '0.0003', 'NDCG@5': '0.0001', 'HIT@10': '0.0006', 'NDCG@10': '0.0002', 'HIT@20': '0.0017', 'NDCG@20': '0.0005'}
+{'Epoch': 14, 'name': 'low_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0000', 'NDCG@20': '0.0000'}
+{'Epoch': 14, 'name': 'all', 'HIT@5': '0.0165', 'NDCG@5': '0.0102', 'HIT@10': '0.0288', 'NDCG@10': '0.0142', 'HIT@20': '0.0469', 'NDCG@20': '0.0187'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 15, 'rec_avg_loss': '0.9012', 'joint_avg_loss': '1.3750', 'cl_avg_loss': '4.7379', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.7379'}
+Recommendation EP_test:15: 100%|| 35/35 [00:08<00:00,  3.96it/s]
+{'Epoch': 15, 'name': 'high_freq', 'HIT@5': '0.0258', 'NDCG@5': '0.0161', 'HIT@10': '0.0450', 'NDCG@10': '0.0223', 'HIT@20': '0.0722', 'NDCG@20': '0.0291'}
+{'Epoch': 15, 'name': 'mid_freq', 'HIT@5': '0.0006', 'NDCG@5': '0.0002', 'HIT@10': '0.0009', 'NDCG@10': '0.0003', 'HIT@20': '0.0017', 'NDCG@20': '0.0006'}
+{'Epoch': 15, 'name': 'low_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0002', 'NDCG@10': '0.0001', 'HIT@20': '0.0005', 'NDCG@20': '0.0001'}
+{'Epoch': 15, 'name': 'all', 'HIT@5': '0.0177', 'NDCG@5': '0.0110', 'HIT@10': '0.0308', 'NDCG@10': '0.0152', 'HIT@20': '0.0495', 'NDCG@20': '0.0199'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.82it/s]
+{'epoch': 16, 'rec_avg_loss': '0.8795', 'joint_avg_loss': '1.3487', 'cl_avg_loss': '4.6921', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.6921'}
+Recommendation EP_test:16: 100%|| 35/35 [00:08<00:00,  4.02it/s]
+{'Epoch': 16, 'name': 'high_freq', 'HIT@5': '0.0253', 'NDCG@5': '0.0159', 'HIT@10': '0.0445', 'NDCG@10': '0.0222', 'HIT@20': '0.0736', 'NDCG@20': '0.0294'}
+{'Epoch': 16, 'name': 'mid_freq', 'HIT@5': '0.0004', 'NDCG@5': '0.0004', 'HIT@10': '0.0010', 'NDCG@10': '0.0006', 'HIT@20': '0.0017', 'NDCG@20': '0.0008'}
+{'Epoch': 16, 'name': 'low_freq', 'HIT@5': '0.0002', 'NDCG@5': '0.0001', 'HIT@10': '0.0005', 'NDCG@10': '0.0002', 'HIT@20': '0.0005', 'NDCG@20': '0.0002'}
+{'Epoch': 16, 'name': 'all', 'HIT@5': '0.0173', 'NDCG@5': '0.0109', 'HIT@10': '0.0305', 'NDCG@10': '0.0152', 'HIT@20': '0.0505', 'NDCG@20': '0.0202'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 17, 'rec_avg_loss': '0.8626', 'joint_avg_loss': '1.3294', 'cl_avg_loss': '4.6681', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.6681'}
+Recommendation EP_test:17: 100%|| 35/35 [00:08<00:00,  3.96it/s]
+{'Epoch': 17, 'name': 'high_freq', 'HIT@5': '0.0264', 'NDCG@5': '0.0168', 'HIT@10': '0.0469', 'NDCG@10': '0.0233', 'HIT@20': '0.0767', 'NDCG@20': '0.0309'}
+{'Epoch': 17, 'name': 'mid_freq', 'HIT@5': '0.0006', 'NDCG@5': '0.0004', 'HIT@10': '0.0010', 'NDCG@10': '0.0005', 'HIT@20': '0.0026', 'NDCG@20': '0.0009'}
+{'Epoch': 17, 'name': 'low_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0005', 'NDCG@20': '0.0001'}
+{'Epoch': 17, 'name': 'all', 'HIT@5': '0.0181', 'NDCG@5': '0.0115', 'HIT@10': '0.0321', 'NDCG@10': '0.0160', 'HIT@20': '0.0528', 'NDCG@20': '0.0212'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 18, 'rec_avg_loss': '0.8440', 'joint_avg_loss': '1.3079', 'cl_avg_loss': '4.6389', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.6389'}
+Recommendation EP_test:18: 100%|| 35/35 [00:08<00:00,  3.98it/s]
+{'Epoch': 18, 'name': 'high_freq', 'HIT@5': '0.0288', 'NDCG@5': '0.0180', 'HIT@10': '0.0481', 'NDCG@10': '0.0242', 'HIT@20': '0.0792', 'NDCG@20': '0.0320'}
+{'Epoch': 18, 'name': 'mid_freq', 'HIT@5': '0.0010', 'NDCG@5': '0.0006', 'HIT@10': '0.0017', 'NDCG@10': '0.0008', 'HIT@20': '0.0022', 'NDCG@20': '0.0009'}
+{'Epoch': 18, 'name': 'low_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0000', 'NDCG@10': '0.0000', 'HIT@20': '0.0002', 'NDCG@20': '0.0001'}
+{'Epoch': 18, 'name': 'all', 'HIT@5': '0.0198', 'NDCG@5': '0.0124', 'HIT@10': '0.0331', 'NDCG@10': '0.0166', 'HIT@20': '0.0543', 'NDCG@20': '0.0220'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 19, 'rec_avg_loss': '0.8309', 'joint_avg_loss': '1.2923', 'cl_avg_loss': '4.6136', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.6136'}
+Recommendation EP_test:19: 100%|| 35/35 [00:08<00:00,  4.02it/s]
+{'Epoch': 19, 'name': 'high_freq', 'HIT@5': '0.0297', 'NDCG@5': '0.0185', 'HIT@10': '0.0495', 'NDCG@10': '0.0248', 'HIT@20': '0.0819', 'NDCG@20': '0.0330'}
+{'Epoch': 19, 'name': 'mid_freq', 'HIT@5': '0.0011', 'NDCG@5': '0.0008', 'HIT@10': '0.0019', 'NDCG@10': '0.0010', 'HIT@20': '0.0023', 'NDCG@20': '0.0011'}
+{'Epoch': 19, 'name': 'low_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0002', 'NDCG@10': '0.0001', 'HIT@20': '0.0005', 'NDCG@20': '0.0001'}
+{'Epoch': 19, 'name': 'all', 'HIT@5': '0.0204', 'NDCG@5': '0.0127', 'HIT@10': '0.0341', 'NDCG@10': '0.0171', 'HIT@20': '0.0562', 'NDCG@20': '0.0227'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.81it/s]
+{'epoch': 20, 'rec_avg_loss': '0.8170', 'joint_avg_loss': '1.2750', 'cl_avg_loss': '4.5802', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.5802'}
+Recommendation EP_test:20: 100%|| 35/35 [00:08<00:00,  4.00it/s]
+{'Epoch': 20, 'name': 'high_freq', 'HIT@5': '0.0307', 'NDCG@5': '0.0189', 'HIT@10': '0.0519', 'NDCG@10': '0.0256', 'HIT@20': '0.0837', 'NDCG@20': '0.0336'}
+{'Epoch': 20, 'name': 'mid_freq', 'HIT@5': '0.0007', 'NDCG@5': '0.0006', 'HIT@10': '0.0016', 'NDCG@10': '0.0008', 'HIT@20': '0.0024', 'NDCG@20': '0.0010'}
+{'Epoch': 20, 'name': 'low_freq', 'HIT@5': '0.0000', 'NDCG@5': '0.0000', 'HIT@10': '0.0005', 'NDCG@10': '0.0002', 'HIT@20': '0.0007', 'NDCG@20': '0.0002'}
+{'Epoch': 20, 'name': 'all', 'HIT@5': '0.0210', 'NDCG@5': '0.0129', 'HIT@10': '0.0356', 'NDCG@10': '0.0176', 'HIT@20': '0.0575', 'NDCG@20': '0.0231'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 21, 'rec_avg_loss': '0.8014', 'joint_avg_loss': '1.2573', 'cl_avg_loss': '4.5583', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.5583'}
+Recommendation EP_test:21: 100%|| 35/35 [00:08<00:00,  3.97it/s]
+{'Epoch': 21, 'name': 'high_freq', 'HIT@5': '0.0292', 'NDCG@5': '0.0186', 'HIT@10': '0.0523', 'NDCG@10': '0.0260', 'HIT@20': '0.0844', 'NDCG@20': '0.0341'}
+{'Epoch': 21, 'name': 'mid_freq', 'HIT@5': '0.0009', 'NDCG@5': '0.0006', 'HIT@10': '0.0016', 'NDCG@10': '0.0008', 'HIT@20': '0.0026', 'NDCG@20': '0.0011'}
+{'Epoch': 21, 'name': 'low_freq', 'HIT@5': '0.0002', 'NDCG@5': '0.0001', 'HIT@10': '0.0007', 'NDCG@10': '0.0002', 'HIT@20': '0.0007', 'NDCG@20': '0.0002'}
+{'Epoch': 21, 'name': 'all', 'HIT@5': '0.0200', 'NDCG@5': '0.0128', 'HIT@10': '0.0360', 'NDCG@10': '0.0179', 'HIT@20': '0.0580', 'NDCG@20': '0.0234'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.81it/s]
+{'epoch': 22, 'rec_avg_loss': '0.7884', 'joint_avg_loss': '1.2421', 'cl_avg_loss': '4.5369', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.5369'}
+Recommendation EP_test:22: 100%|| 35/35 [00:08<00:00,  3.94it/s]
+{'Epoch': 22, 'name': 'high_freq', 'HIT@5': '0.0332', 'NDCG@5': '0.0205', 'HIT@10': '0.0553', 'NDCG@10': '0.0276', 'HIT@20': '0.0869', 'NDCG@20': '0.0355'}
+{'Epoch': 22, 'name': 'mid_freq', 'HIT@5': '0.0011', 'NDCG@5': '0.0008', 'HIT@10': '0.0016', 'NDCG@10': '0.0009', 'HIT@20': '0.0027', 'NDCG@20': '0.0012'}
+{'Epoch': 22, 'name': 'low_freq', 'HIT@5': '0.0005', 'NDCG@5': '0.0004', 'HIT@10': '0.0005', 'NDCG@10': '0.0004', 'HIT@20': '0.0009', 'NDCG@20': '0.0005'}
+{'Epoch': 22, 'name': 'all', 'HIT@5': '0.0228', 'NDCG@5': '0.0141', 'HIT@10': '0.0380', 'NDCG@10': '0.0190', 'HIT@20': '0.0598', 'NDCG@20': '0.0244'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.80it/s]
+{'epoch': 23, 'rec_avg_loss': '0.7778', 'joint_avg_loss': '1.2300', 'cl_avg_loss': '4.5216', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.5216'}
+Recommendation EP_test:23: 100%|| 35/35 [00:08<00:00,  3.97it/s]
+{'Epoch': 23, 'name': 'high_freq', 'HIT@5': '0.0335', 'NDCG@5': '0.0210', 'HIT@10': '0.0531', 'NDCG@10': '0.0273', 'HIT@20': '0.0867', 'NDCG@20': '0.0358'}
+{'Epoch': 23, 'name': 'mid_freq', 'HIT@5': '0.0009', 'NDCG@5': '0.0007', 'HIT@10': '0.0010', 'NDCG@10': '0.0007', 'HIT@20': '0.0026', 'NDCG@20': '0.0011'}
+{'Epoch': 23, 'name': 'low_freq', 'HIT@5': '0.0005', 'NDCG@5': '0.0004', 'HIT@10': '0.0005', 'NDCG@10': '0.0004', 'HIT@20': '0.0007', 'NDCG@20': '0.0004'}
+{'Epoch': 23, 'name': 'all', 'HIT@5': '0.0230', 'NDCG@5': '0.0145', 'HIT@10': '0.0364', 'NDCG@10': '0.0188', 'HIT@20': '0.0596', 'NDCG@20': '0.0246'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 24, 'rec_avg_loss': '0.7656', 'joint_avg_loss': '1.2163', 'cl_avg_loss': '4.5061', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.5061'}
+Recommendation EP_test:24: 100%|| 35/35 [00:08<00:00,  4.04it/s]
+{'Epoch': 24, 'name': 'high_freq', 'HIT@5': '0.0349', 'NDCG@5': '0.0222', 'HIT@10': '0.0551', 'NDCG@10': '0.0286', 'HIT@20': '0.0885', 'NDCG@20': '0.0370'}
+{'Epoch': 24, 'name': 'mid_freq', 'HIT@5': '0.0007', 'NDCG@5': '0.0006', 'HIT@10': '0.0013', 'NDCG@10': '0.0008', 'HIT@20': '0.0023', 'NDCG@20': '0.0010'}
+{'Epoch': 24, 'name': 'low_freq', 'HIT@5': '0.0007', 'NDCG@5': '0.0005', 'HIT@10': '0.0007', 'NDCG@10': '0.0005', 'HIT@20': '0.0009', 'NDCG@20': '0.0006'}
+{'Epoch': 24, 'name': 'all', 'HIT@5': '0.0240', 'NDCG@5': '0.0153', 'HIT@10': '0.0378', 'NDCG@10': '0.0197', 'HIT@20': '0.0607', 'NDCG@20': '0.0254'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 25, 'rec_avg_loss': '0.7547', 'joint_avg_loss': '1.2023', 'cl_avg_loss': '4.4758', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.4758'}
+Recommendation EP_test:25: 100%|| 35/35 [00:08<00:00,  3.98it/s]
+{'Epoch': 25, 'name': 'high_freq', 'HIT@5': '0.0342', 'NDCG@5': '0.0217', 'HIT@10': '0.0560', 'NDCG@10': '0.0287', 'HIT@20': '0.0892', 'NDCG@20': '0.0371'}
+{'Epoch': 25, 'name': 'mid_freq', 'HIT@5': '0.0010', 'NDCG@5': '0.0007', 'HIT@10': '0.0017', 'NDCG@10': '0.0009', 'HIT@20': '0.0034', 'NDCG@20': '0.0014'}
+{'Epoch': 25, 'name': 'low_freq', 'HIT@5': '0.0007', 'NDCG@5': '0.0004', 'HIT@10': '0.0009', 'NDCG@10': '0.0005', 'HIT@20': '0.0014', 'NDCG@20': '0.0006'}
+{'Epoch': 25, 'name': 'all', 'HIT@5': '0.0236', 'NDCG@5': '0.0150', 'HIT@10': '0.0385', 'NDCG@10': '0.0198', 'HIT@20': '0.0615', 'NDCG@20': '0.0256'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 26, 'rec_avg_loss': '0.7440', 'joint_avg_loss': '1.1907', 'cl_avg_loss': '4.4664', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.4664'}
+Recommendation EP_test:26: 100%|| 35/35 [00:08<00:00,  4.04it/s]
+{'Epoch': 26, 'name': 'high_freq', 'HIT@5': '0.0348', 'NDCG@5': '0.0226', 'HIT@10': '0.0578', 'NDCG@10': '0.0300', 'HIT@20': '0.0908', 'NDCG@20': '0.0383'}
+{'Epoch': 26, 'name': 'mid_freq', 'HIT@5': '0.0010', 'NDCG@5': '0.0008', 'HIT@10': '0.0022', 'NDCG@10': '0.0012', 'HIT@20': '0.0046', 'NDCG@20': '0.0018'}
+{'Epoch': 26, 'name': 'low_freq', 'HIT@5': '0.0007', 'NDCG@5': '0.0004', 'HIT@10': '0.0009', 'NDCG@10': '0.0005', 'HIT@20': '0.0016', 'NDCG@20': '0.0006'}
+{'Epoch': 26, 'name': 'all', 'HIT@5': '0.0239', 'NDCG@5': '0.0156', 'HIT@10': '0.0399', 'NDCG@10': '0.0207', 'HIT@20': '0.0628', 'NDCG@20': '0.0265'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 27, 'rec_avg_loss': '0.7369', 'joint_avg_loss': '1.1797', 'cl_avg_loss': '4.4283', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.4283'}
+Recommendation EP_test:27: 100%|| 35/35 [00:08<00:00,  3.96it/s]
+{'Epoch': 27, 'name': 'high_freq', 'HIT@5': '0.0361', 'NDCG@5': '0.0232', 'HIT@10': '0.0583', 'NDCG@10': '0.0303', 'HIT@20': '0.0915', 'NDCG@20': '0.0387'}
+{'Epoch': 27, 'name': 'mid_freq', 'HIT@5': '0.0013', 'NDCG@5': '0.0009', 'HIT@10': '0.0023', 'NDCG@10': '0.0012', 'HIT@20': '0.0042', 'NDCG@20': '0.0017'}
+{'Epoch': 27, 'name': 'low_freq', 'HIT@5': '0.0007', 'NDCG@5': '0.0005', 'HIT@10': '0.0009', 'NDCG@10': '0.0006', 'HIT@20': '0.0014', 'NDCG@20': '0.0007'}
+{'Epoch': 27, 'name': 'all', 'HIT@5': '0.0249', 'NDCG@5': '0.0160', 'HIT@10': '0.0402', 'NDCG@10': '0.0209', 'HIT@20': '0.0632', 'NDCG@20': '0.0267'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 28, 'rec_avg_loss': '0.7258', 'joint_avg_loss': '1.1685', 'cl_avg_loss': '4.4273', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.4273'}
+Recommendation EP_test:28: 100%|| 35/35 [00:08<00:00,  4.05it/s]
+{'Epoch': 28, 'name': 'high_freq', 'HIT@5': '0.0360', 'NDCG@5': '0.0232', 'HIT@10': '0.0583', 'NDCG@10': '0.0304', 'HIT@20': '0.0946', 'NDCG@20': '0.0395'}
+{'Epoch': 28, 'name': 'mid_freq', 'HIT@5': '0.0014', 'NDCG@5': '0.0009', 'HIT@10': '0.0027', 'NDCG@10': '0.0013', 'HIT@20': '0.0045', 'NDCG@20': '0.0017'}
+{'Epoch': 28, 'name': 'low_freq', 'HIT@5': '0.0007', 'NDCG@5': '0.0003', 'HIT@10': '0.0009', 'NDCG@10': '0.0004', 'HIT@20': '0.0014', 'NDCG@20': '0.0005'}
+{'Epoch': 28, 'name': 'all', 'HIT@5': '0.0249', 'NDCG@5': '0.0160', 'HIT@10': '0.0403', 'NDCG@10': '0.0210', 'HIT@20': '0.0654', 'NDCG@20': '0.0273'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 29, 'rec_avg_loss': '0.7142', 'joint_avg_loss': '1.1535', 'cl_avg_loss': '4.3930', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.3930'}
+Recommendation EP_test:29: 100%|| 35/35 [00:08<00:00,  4.11it/s]
+{'Epoch': 29, 'name': 'high_freq', 'HIT@5': '0.0364', 'NDCG@5': '0.0235', 'HIT@10': '0.0600', 'NDCG@10': '0.0311', 'HIT@20': '0.0937', 'NDCG@20': '0.0396'}
+{'Epoch': 29, 'name': 'mid_freq', 'HIT@5': '0.0011', 'NDCG@5': '0.0007', 'HIT@10': '0.0022', 'NDCG@10': '0.0010', 'HIT@20': '0.0042', 'NDCG@20': '0.0015'}
+{'Epoch': 29, 'name': 'low_freq', 'HIT@5': '0.0007', 'NDCG@5': '0.0005', 'HIT@10': '0.0009', 'NDCG@10': '0.0006', 'HIT@20': '0.0011', 'NDCG@20': '0.0007'}
+{'Epoch': 29, 'name': 'all', 'HIT@5': '0.0251', 'NDCG@5': '0.0162', 'HIT@10': '0.0414', 'NDCG@10': '0.0214', 'HIT@20': '0.0647', 'NDCG@20': '0.0273'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.78it/s]
+{'epoch': 30, 'rec_avg_loss': '0.7086', 'joint_avg_loss': '1.1459', 'cl_avg_loss': '4.3729', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.3729'}
+Recommendation EP_test:30: 100%|| 35/35 [00:08<00:00,  4.06it/s]
+{'Epoch': 30, 'name': 'high_freq', 'HIT@5': '0.0384', 'NDCG@5': '0.0251', 'HIT@10': '0.0612', 'NDCG@10': '0.0324', 'HIT@20': '0.0979', 'NDCG@20': '0.0416'}
+{'Epoch': 30, 'name': 'mid_freq', 'HIT@5': '0.0016', 'NDCG@5': '0.0009', 'HIT@10': '0.0023', 'NDCG@10': '0.0012', 'HIT@20': '0.0042', 'NDCG@20': '0.0016'}
+{'Epoch': 30, 'name': 'low_freq', 'HIT@5': '0.0009', 'NDCG@5': '0.0006', 'HIT@10': '0.0009', 'NDCG@10': '0.0006', 'HIT@20': '0.0016', 'NDCG@20': '0.0008'}
+{'Epoch': 30, 'name': 'all', 'HIT@5': '0.0266', 'NDCG@5': '0.0173', 'HIT@10': '0.0422', 'NDCG@10': '0.0224', 'HIT@20': '0.0676', 'NDCG@20': '0.0287'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.82it/s]
+{'epoch': 31, 'rec_avg_loss': '0.6988', 'joint_avg_loss': '1.1361', 'cl_avg_loss': '4.3731', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.3731'}
+Recommendation EP_test:31: 100%|| 35/35 [00:08<00:00,  4.06it/s]
+{'Epoch': 31, 'name': 'high_freq', 'HIT@5': '0.0384', 'NDCG@5': '0.0248', 'HIT@10': '0.0633', 'NDCG@10': '0.0328', 'HIT@20': '0.0981', 'NDCG@20': '0.0415'}
+{'Epoch': 31, 'name': 'mid_freq', 'HIT@5': '0.0016', 'NDCG@5': '0.0011', 'HIT@10': '0.0023', 'NDCG@10': '0.0013', 'HIT@20': '0.0050', 'NDCG@20': '0.0020'}
+{'Epoch': 31, 'name': 'low_freq', 'HIT@5': '0.0009', 'NDCG@5': '0.0006', 'HIT@10': '0.0011', 'NDCG@10': '0.0007', 'HIT@20': '0.0020', 'NDCG@20': '0.0009'}
+{'Epoch': 31, 'name': 'all', 'HIT@5': '0.0265', 'NDCG@5': '0.0172', 'HIT@10': '0.0437', 'NDCG@10': '0.0226', 'HIT@20': '0.0680', 'NDCG@20': '0.0287'}
+EarlyStopping counter: 1 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 32, 'rec_avg_loss': '0.6890', 'joint_avg_loss': '1.1230', 'cl_avg_loss': '4.3396', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.3396'}
+Recommendation EP_test:32: 100%|| 35/35 [00:08<00:00,  4.18it/s]
+{'Epoch': 32, 'name': 'high_freq', 'HIT@5': '0.0384', 'NDCG@5': '0.0246', 'HIT@10': '0.0653', 'NDCG@10': '0.0332', 'HIT@20': '0.1014', 'NDCG@20': '0.0423'}
+{'Epoch': 32, 'name': 'mid_freq', 'HIT@5': '0.0013', 'NDCG@5': '0.0009', 'HIT@10': '0.0026', 'NDCG@10': '0.0014', 'HIT@20': '0.0046', 'NDCG@20': '0.0019'}
+{'Epoch': 32, 'name': 'low_freq', 'HIT@5': '0.0009', 'NDCG@5': '0.0007', 'HIT@10': '0.0011', 'NDCG@10': '0.0007', 'HIT@20': '0.0020', 'NDCG@20': '0.0009'}
+{'Epoch': 32, 'name': 'all', 'HIT@5': '0.0265', 'NDCG@5': '0.0170', 'HIT@10': '0.0451', 'NDCG@10': '0.0230', 'HIT@20': '0.0701', 'NDCG@20': '0.0293'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.81it/s]
+{'epoch': 33, 'rec_avg_loss': '0.6805', 'joint_avg_loss': '1.1144', 'cl_avg_loss': '4.3391', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.3391'}
+Recommendation EP_test:33: 100%|| 35/35 [00:08<00:00,  4.01it/s]
+{'Epoch': 33, 'name': 'high_freq', 'HIT@5': '0.0383', 'NDCG@5': '0.0244', 'HIT@10': '0.0634', 'NDCG@10': '0.0324', 'HIT@20': '0.0992', 'NDCG@20': '0.0414'}
+{'Epoch': 33, 'name': 'mid_freq', 'HIT@5': '0.0013', 'NDCG@5': '0.0007', 'HIT@10': '0.0027', 'NDCG@10': '0.0012', 'HIT@20': '0.0045', 'NDCG@20': '0.0016'}
+{'Epoch': 33, 'name': 'low_freq', 'HIT@5': '0.0009', 'NDCG@5': '0.0007', 'HIT@10': '0.0009', 'NDCG@10': '0.0007', 'HIT@20': '0.0020', 'NDCG@20': '0.0010'}
+{'Epoch': 33, 'name': 'all', 'HIT@5': '0.0264', 'NDCG@5': '0.0168', 'HIT@10': '0.0438', 'NDCG@10': '0.0224', 'HIT@20': '0.0686', 'NDCG@20': '0.0286'}
+EarlyStopping counter: 1 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 34, 'rec_avg_loss': '0.6745', 'joint_avg_loss': '1.1060', 'cl_avg_loss': '4.3157', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.3157'}
+Recommendation EP_test:34: 100%|| 35/35 [00:08<00:00,  4.06it/s]
+{'Epoch': 34, 'name': 'high_freq', 'HIT@5': '0.0386', 'NDCG@5': '0.0246', 'HIT@10': '0.0633', 'NDCG@10': '0.0325', 'HIT@20': '0.0988', 'NDCG@20': '0.0415'}
+{'Epoch': 34, 'name': 'mid_freq', 'HIT@5': '0.0016', 'NDCG@5': '0.0009', 'HIT@10': '0.0034', 'NDCG@10': '0.0016', 'HIT@20': '0.0047', 'NDCG@20': '0.0019'}
+{'Epoch': 34, 'name': 'low_freq', 'HIT@5': '0.0011', 'NDCG@5': '0.0007', 'HIT@10': '0.0011', 'NDCG@10': '0.0007', 'HIT@20': '0.0020', 'NDCG@20': '0.0009'}
+{'Epoch': 34, 'name': 'all', 'HIT@5': '0.0267', 'NDCG@5': '0.0170', 'HIT@10': '0.0439', 'NDCG@10': '0.0225', 'HIT@20': '0.0684', 'NDCG@20': '0.0287'}
+EarlyStopping counter: 2 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 35, 'rec_avg_loss': '0.6656', 'joint_avg_loss': '1.0962', 'cl_avg_loss': '4.3062', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.3062'}
+Recommendation EP_test:35: 100%|| 35/35 [00:08<00:00,  4.04it/s]
+{'Epoch': 35, 'name': 'high_freq', 'HIT@5': '0.0394', 'NDCG@5': '0.0255', 'HIT@10': '0.0639', 'NDCG@10': '0.0333', 'HIT@20': '0.0979', 'NDCG@20': '0.0419'}
+{'Epoch': 35, 'name': 'mid_freq', 'HIT@5': '0.0026', 'NDCG@5': '0.0014', 'HIT@10': '0.0033', 'NDCG@10': '0.0016', 'HIT@20': '0.0049', 'NDCG@20': '0.0020'}
+{'Epoch': 35, 'name': 'low_freq', 'HIT@5': '0.0009', 'NDCG@5': '0.0006', 'HIT@10': '0.0014', 'NDCG@10': '0.0007', 'HIT@20': '0.0025', 'NDCG@20': '0.0010'}
+{'Epoch': 35, 'name': 'all', 'HIT@5': '0.0274', 'NDCG@5': '0.0177', 'HIT@10': '0.0443', 'NDCG@10': '0.0231', 'HIT@20': '0.0679', 'NDCG@20': '0.0290'}
+EarlyStopping counter: 3 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.80it/s]
+{'epoch': 36, 'rec_avg_loss': '0.6598', 'joint_avg_loss': '1.0878', 'cl_avg_loss': '4.2802', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.2802'}
+Recommendation EP_test:36: 100%|| 35/35 [00:08<00:00,  4.05it/s]
+{'Epoch': 36, 'name': 'high_freq', 'HIT@5': '0.0396', 'NDCG@5': '0.0257', 'HIT@10': '0.0637', 'NDCG@10': '0.0333', 'HIT@20': '0.0981', 'NDCG@20': '0.0420'}
+{'Epoch': 36, 'name': 'mid_freq', 'HIT@5': '0.0022', 'NDCG@5': '0.0013', 'HIT@10': '0.0034', 'NDCG@10': '0.0017', 'HIT@20': '0.0059', 'NDCG@20': '0.0023'}
+{'Epoch': 36, 'name': 'low_freq', 'HIT@5': '0.0009', 'NDCG@5': '0.0007', 'HIT@10': '0.0014', 'NDCG@10': '0.0008', 'HIT@20': '0.0023', 'NDCG@20': '0.0011'}
+{'Epoch': 36, 'name': 'all', 'HIT@5': '0.0275', 'NDCG@5': '0.0178', 'HIT@10': '0.0442', 'NDCG@10': '0.0231', 'HIT@20': '0.0682', 'NDCG@20': '0.0292'}
+EarlyStopping counter: 4 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.81it/s]
+{'epoch': 37, 'rec_avg_loss': '0.6527', 'joint_avg_loss': '1.0787', 'cl_avg_loss': '4.2604', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.2604'}
+Recommendation EP_test:37: 100%|| 35/35 [00:08<00:00,  4.02it/s]
+{'Epoch': 37, 'name': 'high_freq', 'HIT@5': '0.0407', 'NDCG@5': '0.0263', 'HIT@10': '0.0648', 'NDCG@10': '0.0341', 'HIT@20': '0.0996', 'NDCG@20': '0.0428'}
+{'Epoch': 37, 'name': 'mid_freq', 'HIT@5': '0.0020', 'NDCG@5': '0.0013', 'HIT@10': '0.0036', 'NDCG@10': '0.0018', 'HIT@20': '0.0056', 'NDCG@20': '0.0023'}
+{'Epoch': 37, 'name': 'low_freq', 'HIT@5': '0.0009', 'NDCG@5': '0.0006', 'HIT@10': '0.0009', 'NDCG@10': '0.0006', 'HIT@20': '0.0018', 'NDCG@20': '0.0008'}
+{'Epoch': 37, 'name': 'all', 'HIT@5': '0.0282', 'NDCG@5': '0.0182', 'HIT@10': '0.0449', 'NDCG@10': '0.0236', 'HIT@20': '0.0690', 'NDCG@20': '0.0296'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.80it/s]
+{'epoch': 38, 'rec_avg_loss': '0.6473', 'joint_avg_loss': '1.0723', 'cl_avg_loss': '4.2501', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.2501'}
+Recommendation EP_test:38: 100%|| 35/35 [00:08<00:00,  3.97it/s]
+{'Epoch': 38, 'name': 'high_freq', 'HIT@5': '0.0407', 'NDCG@5': '0.0264', 'HIT@10': '0.0662', 'NDCG@10': '0.0346', 'HIT@20': '0.1005', 'NDCG@20': '0.0432'}
+{'Epoch': 38, 'name': 'mid_freq', 'HIT@5': '0.0023', 'NDCG@5': '0.0013', 'HIT@10': '0.0037', 'NDCG@10': '0.0017', 'HIT@20': '0.0063', 'NDCG@20': '0.0024'}
+{'Epoch': 38, 'name': 'low_freq', 'HIT@5': '0.0009', 'NDCG@5': '0.0005', 'HIT@10': '0.0016', 'NDCG@10': '0.0008', 'HIT@20': '0.0027', 'NDCG@20': '0.0010'}
+{'Epoch': 38, 'name': 'all', 'HIT@5': '0.0282', 'NDCG@5': '0.0183', 'HIT@10': '0.0459', 'NDCG@10': '0.0240', 'HIT@20': '0.0699', 'NDCG@20': '0.0300'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 39, 'rec_avg_loss': '0.6424', 'joint_avg_loss': '1.0662', 'cl_avg_loss': '4.2378', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.2378'}
+Recommendation EP_test:39: 100%|| 35/35 [00:08<00:00,  4.01it/s]
+{'Epoch': 39, 'name': 'high_freq', 'HIT@5': '0.0419', 'NDCG@5': '0.0267', 'HIT@10': '0.0661', 'NDCG@10': '0.0345', 'HIT@20': '0.1017', 'NDCG@20': '0.0435'}
+{'Epoch': 39, 'name': 'mid_freq', 'HIT@5': '0.0029', 'NDCG@5': '0.0017', 'HIT@10': '0.0039', 'NDCG@10': '0.0021', 'HIT@20': '0.0062', 'NDCG@20': '0.0026'}
+{'Epoch': 39, 'name': 'low_freq', 'HIT@5': '0.0011', 'NDCG@5': '0.0007', 'HIT@10': '0.0025', 'NDCG@10': '0.0012', 'HIT@20': '0.0036', 'NDCG@20': '0.0014'}
+{'Epoch': 39, 'name': 'all', 'HIT@5': '0.0292', 'NDCG@5': '0.0186', 'HIT@10': '0.0460', 'NDCG@10': '0.0240', 'HIT@20': '0.0709', 'NDCG@20': '0.0303'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 40, 'rec_avg_loss': '0.6355', 'joint_avg_loss': '1.0587', 'cl_avg_loss': '4.2321', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.2321'}
+Recommendation EP_test:40: 100%|| 35/35 [00:08<00:00,  4.05it/s]
+{'Epoch': 40, 'name': 'high_freq', 'HIT@5': '0.0408', 'NDCG@5': '0.0259', 'HIT@10': '0.0660', 'NDCG@10': '0.0340', 'HIT@20': '0.1016', 'NDCG@20': '0.0430'}
+{'Epoch': 40, 'name': 'mid_freq', 'HIT@5': '0.0020', 'NDCG@5': '0.0014', 'HIT@10': '0.0034', 'NDCG@10': '0.0019', 'HIT@20': '0.0066', 'NDCG@20': '0.0027'}
+{'Epoch': 40, 'name': 'low_freq', 'HIT@5': '0.0011', 'NDCG@5': '0.0009', 'HIT@10': '0.0018', 'NDCG@10': '0.0011', 'HIT@20': '0.0038', 'NDCG@20': '0.0016'}
+{'Epoch': 40, 'name': 'all', 'HIT@5': '0.0283', 'NDCG@5': '0.0180', 'HIT@10': '0.0458', 'NDCG@10': '0.0236', 'HIT@20': '0.0709', 'NDCG@20': '0.0299'}
+EarlyStopping counter: 1 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 41, 'rec_avg_loss': '0.6293', 'joint_avg_loss': '1.0522', 'cl_avg_loss': '4.2286', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.2286'}
+Recommendation EP_test:41: 100%|| 35/35 [00:08<00:00,  4.17it/s]
+{'Epoch': 41, 'name': 'high_freq', 'HIT@5': '0.0427', 'NDCG@5': '0.0273', 'HIT@10': '0.0674', 'NDCG@10': '0.0353', 'HIT@20': '0.1032', 'NDCG@20': '0.0443'}
+{'Epoch': 41, 'name': 'mid_freq', 'HIT@5': '0.0023', 'NDCG@5': '0.0014', 'HIT@10': '0.0043', 'NDCG@10': '0.0020', 'HIT@20': '0.0060', 'NDCG@20': '0.0025'}
+{'Epoch': 41, 'name': 'low_freq', 'HIT@5': '0.0014', 'NDCG@5': '0.0009', 'HIT@10': '0.0020', 'NDCG@10': '0.0011', 'HIT@20': '0.0041', 'NDCG@20': '0.0016'}
+{'Epoch': 41, 'name': 'all', 'HIT@5': '0.0296', 'NDCG@5': '0.0190', 'HIT@10': '0.0470', 'NDCG@10': '0.0246', 'HIT@20': '0.0719', 'NDCG@20': '0.0308'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.80it/s]
+{'epoch': 42, 'rec_avg_loss': '0.6249', 'joint_avg_loss': '1.0458', 'cl_avg_loss': '4.2086', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.2086'}
+Recommendation EP_test:42: 100%|| 35/35 [00:08<00:00,  3.97it/s]
+{'Epoch': 42, 'name': 'high_freq', 'HIT@5': '0.0438', 'NDCG@5': '0.0287', 'HIT@10': '0.0688', 'NDCG@10': '0.0367', 'HIT@20': '0.1032', 'NDCG@20': '0.0453'}
+{'Epoch': 42, 'name': 'mid_freq', 'HIT@5': '0.0026', 'NDCG@5': '0.0019', 'HIT@10': '0.0046', 'NDCG@10': '0.0025', 'HIT@20': '0.0070', 'NDCG@20': '0.0031'}
+{'Epoch': 42, 'name': 'low_freq', 'HIT@5': '0.0014', 'NDCG@5': '0.0010', 'HIT@10': '0.0018', 'NDCG@10': '0.0011', 'HIT@20': '0.0036', 'NDCG@20': '0.0016'}
+{'Epoch': 42, 'name': 'all', 'HIT@5': '0.0305', 'NDCG@5': '0.0200', 'HIT@10': '0.0479', 'NDCG@10': '0.0256', 'HIT@20': '0.0720', 'NDCG@20': '0.0317'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.81it/s]
+{'epoch': 43, 'rec_avg_loss': '0.6188', 'joint_avg_loss': '1.0377', 'cl_avg_loss': '4.1893', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.1893'}
+Recommendation EP_test:43: 100%|| 35/35 [00:08<00:00,  3.97it/s]
+{'Epoch': 43, 'name': 'high_freq', 'HIT@5': '0.0430', 'NDCG@5': '0.0275', 'HIT@10': '0.0662', 'NDCG@10': '0.0350', 'HIT@20': '0.1021', 'NDCG@20': '0.0439'}
+{'Epoch': 43, 'name': 'mid_freq', 'HIT@5': '0.0027', 'NDCG@5': '0.0019', 'HIT@10': '0.0045', 'NDCG@10': '0.0025', 'HIT@20': '0.0072', 'NDCG@20': '0.0031'}
+{'Epoch': 43, 'name': 'low_freq', 'HIT@5': '0.0016', 'NDCG@5': '0.0010', 'HIT@10': '0.0023', 'NDCG@10': '0.0012', 'HIT@20': '0.0029', 'NDCG@20': '0.0014'}
+{'Epoch': 43, 'name': 'all', 'HIT@5': '0.0300', 'NDCG@5': '0.0192', 'HIT@10': '0.0462', 'NDCG@10': '0.0244', 'HIT@20': '0.0712', 'NDCG@20': '0.0307'}
+EarlyStopping counter: 1 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 44, 'rec_avg_loss': '0.6139', 'joint_avg_loss': '1.0312', 'cl_avg_loss': '4.1732', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.1732'}
+Recommendation EP_test:44: 100%|| 35/35 [00:08<00:00,  4.04it/s]
+{'Epoch': 44, 'name': 'high_freq', 'HIT@5': '0.0439', 'NDCG@5': '0.0278', 'HIT@10': '0.0694', 'NDCG@10': '0.0360', 'HIT@20': '0.1035', 'NDCG@20': '0.0445'}
+{'Epoch': 44, 'name': 'mid_freq', 'HIT@5': '0.0029', 'NDCG@5': '0.0018', 'HIT@10': '0.0047', 'NDCG@10': '0.0024', 'HIT@20': '0.0070', 'NDCG@20': '0.0030'}
+{'Epoch': 44, 'name': 'low_freq', 'HIT@5': '0.0016', 'NDCG@5': '0.0009', 'HIT@10': '0.0020', 'NDCG@10': '0.0010', 'HIT@20': '0.0032', 'NDCG@20': '0.0013'}
+{'Epoch': 44, 'name': 'all', 'HIT@5': '0.0306', 'NDCG@5': '0.0194', 'HIT@10': '0.0484', 'NDCG@10': '0.0251', 'HIT@20': '0.0722', 'NDCG@20': '0.0310'}
+EarlyStopping counter: 2 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 45, 'rec_avg_loss': '0.6090', 'joint_avg_loss': '1.0262', 'cl_avg_loss': '4.1717', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.1717'}
+Recommendation EP_test:45: 100%|| 35/35 [00:08<00:00,  3.93it/s]
+{'Epoch': 45, 'name': 'high_freq', 'HIT@5': '0.0429', 'NDCG@5': '0.0276', 'HIT@10': '0.0687', 'NDCG@10': '0.0358', 'HIT@20': '0.1040', 'NDCG@20': '0.0447'}
+{'Epoch': 45, 'name': 'mid_freq', 'HIT@5': '0.0036', 'NDCG@5': '0.0022', 'HIT@10': '0.0052', 'NDCG@10': '0.0027', 'HIT@20': '0.0078', 'NDCG@20': '0.0034'}
+{'Epoch': 45, 'name': 'low_freq', 'HIT@5': '0.0018', 'NDCG@5': '0.0012', 'HIT@10': '0.0023', 'NDCG@10': '0.0013', 'HIT@20': '0.0041', 'NDCG@20': '0.0017'}
+{'Epoch': 45, 'name': 'all', 'HIT@5': '0.0301', 'NDCG@5': '0.0194', 'HIT@10': '0.0480', 'NDCG@10': '0.0251', 'HIT@20': '0.0728', 'NDCG@20': '0.0313'}
+EarlyStopping counter: 3 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.82it/s]
+{'epoch': 46, 'rec_avg_loss': '0.6047', 'joint_avg_loss': '1.0199', 'cl_avg_loss': '4.1529', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.1529'}
+Recommendation EP_test:46: 100%|| 35/35 [00:08<00:00,  3.99it/s]
+{'Epoch': 46, 'name': 'high_freq', 'HIT@5': '0.0426', 'NDCG@5': '0.0277', 'HIT@10': '0.0677', 'NDCG@10': '0.0358', 'HIT@20': '0.1038', 'NDCG@20': '0.0449'}
+{'Epoch': 46, 'name': 'mid_freq', 'HIT@5': '0.0032', 'NDCG@5': '0.0021', 'HIT@10': '0.0047', 'NDCG@10': '0.0026', 'HIT@20': '0.0078', 'NDCG@20': '0.0034'}
+{'Epoch': 46, 'name': 'low_freq', 'HIT@5': '0.0016', 'NDCG@5': '0.0010', 'HIT@10': '0.0029', 'NDCG@10': '0.0014', 'HIT@20': '0.0036', 'NDCG@20': '0.0016'}
+{'Epoch': 46, 'name': 'all', 'HIT@5': '0.0298', 'NDCG@5': '0.0194', 'HIT@10': '0.0473', 'NDCG@10': '0.0251', 'HIT@20': '0.0726', 'NDCG@20': '0.0314'}
+EarlyStopping counter: 4 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 47, 'rec_avg_loss': '0.6010', 'joint_avg_loss': '1.0152', 'cl_avg_loss': '4.1426', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.1426'}
+Recommendation EP_test:47: 100%|| 35/35 [00:08<00:00,  4.07it/s]
+{'Epoch': 47, 'name': 'high_freq', 'HIT@5': '0.0427', 'NDCG@5': '0.0277', 'HIT@10': '0.0667', 'NDCG@10': '0.0354', 'HIT@20': '0.1033', 'NDCG@20': '0.0446'}
+{'Epoch': 47, 'name': 'mid_freq', 'HIT@5': '0.0036', 'NDCG@5': '0.0026', 'HIT@10': '0.0059', 'NDCG@10': '0.0033', 'HIT@20': '0.0082', 'NDCG@20': '0.0039'}
+{'Epoch': 47, 'name': 'low_freq', 'HIT@5': '0.0020', 'NDCG@5': '0.0013', 'HIT@10': '0.0029', 'NDCG@10': '0.0016', 'HIT@20': '0.0043', 'NDCG@20': '0.0019'}
+{'Epoch': 47, 'name': 'all', 'HIT@5': '0.0300', 'NDCG@5': '0.0195', 'HIT@10': '0.0469', 'NDCG@10': '0.0250', 'HIT@20': '0.0724', 'NDCG@20': '0.0313'}
+EarlyStopping counter: 5 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 48, 'rec_avg_loss': '0.5948', 'joint_avg_loss': '1.0076', 'cl_avg_loss': '4.1277', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.1277'}
+Recommendation EP_test:48: 100%|| 35/35 [00:08<00:00,  4.03it/s]
+{'Epoch': 48, 'name': 'high_freq', 'HIT@5': '0.0422', 'NDCG@5': '0.0280', 'HIT@10': '0.0668', 'NDCG@10': '0.0359', 'HIT@20': '0.1041', 'NDCG@20': '0.0453'}
+{'Epoch': 48, 'name': 'mid_freq', 'HIT@5': '0.0032', 'NDCG@5': '0.0023', 'HIT@10': '0.0050', 'NDCG@10': '0.0029', 'HIT@20': '0.0069', 'NDCG@20': '0.0034'}
+{'Epoch': 48, 'name': 'low_freq', 'HIT@5': '0.0023', 'NDCG@5': '0.0015', 'HIT@10': '0.0032', 'NDCG@10': '0.0017', 'HIT@20': '0.0045', 'NDCG@20': '0.0021'}
+{'Epoch': 48, 'name': 'all', 'HIT@5': '0.0296', 'NDCG@5': '0.0197', 'HIT@10': '0.0468', 'NDCG@10': '0.0252', 'HIT@20': '0.0727', 'NDCG@20': '0.0317'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.81it/s]
+{'epoch': 49, 'rec_avg_loss': '0.5910', 'joint_avg_loss': '1.0017', 'cl_avg_loss': '4.1067', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.1067'}
+Recommendation EP_test:49: 100%|| 35/35 [00:08<00:00,  4.16it/s]
+{'Epoch': 49, 'name': 'high_freq', 'HIT@5': '0.0430', 'NDCG@5': '0.0280', 'HIT@10': '0.0665', 'NDCG@10': '0.0356', 'HIT@20': '0.1022', 'NDCG@20': '0.0445'}
+{'Epoch': 49, 'name': 'mid_freq', 'HIT@5': '0.0033', 'NDCG@5': '0.0022', 'HIT@10': '0.0053', 'NDCG@10': '0.0029', 'HIT@20': '0.0082', 'NDCG@20': '0.0036'}
+{'Epoch': 49, 'name': 'low_freq', 'HIT@5': '0.0018', 'NDCG@5': '0.0011', 'HIT@10': '0.0029', 'NDCG@10': '0.0015', 'HIT@20': '0.0043', 'NDCG@20': '0.0019'}
+{'Epoch': 49, 'name': 'all', 'HIT@5': '0.0301', 'NDCG@5': '0.0196', 'HIT@10': '0.0467', 'NDCG@10': '0.0249', 'HIT@20': '0.0717', 'NDCG@20': '0.0312'}
+EarlyStopping counter: 1 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 50, 'rec_avg_loss': '0.5843', 'joint_avg_loss': '0.9948', 'cl_avg_loss': '4.1056', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.1056'}
+Recommendation EP_test:50: 100%|| 35/35 [00:08<00:00,  4.11it/s]
+{'Epoch': 50, 'name': 'high_freq', 'HIT@5': '0.0439', 'NDCG@5': '0.0283', 'HIT@10': '0.0707', 'NDCG@10': '0.0369', 'HIT@20': '0.1057', 'NDCG@20': '0.0457'}
+{'Epoch': 50, 'name': 'mid_freq', 'HIT@5': '0.0037', 'NDCG@5': '0.0025', 'HIT@10': '0.0057', 'NDCG@10': '0.0031', 'HIT@20': '0.0082', 'NDCG@20': '0.0037'}
+{'Epoch': 50, 'name': 'low_freq', 'HIT@5': '0.0023', 'NDCG@5': '0.0014', 'HIT@10': '0.0032', 'NDCG@10': '0.0017', 'HIT@20': '0.0045', 'NDCG@20': '0.0020'}
+{'Epoch': 50, 'name': 'all', 'HIT@5': '0.0309', 'NDCG@5': '0.0199', 'HIT@10': '0.0496', 'NDCG@10': '0.0259', 'HIT@20': '0.0741', 'NDCG@20': '0.0321'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 51, 'rec_avg_loss': '0.5818', 'joint_avg_loss': '0.9911', 'cl_avg_loss': '4.0929', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.0929'}
+Recommendation EP_test:51: 100%|| 35/35 [00:08<00:00,  4.06it/s]
+{'Epoch': 51, 'name': 'high_freq', 'HIT@5': '0.0424', 'NDCG@5': '0.0274', 'HIT@10': '0.0686', 'NDCG@10': '0.0358', 'HIT@20': '0.1053', 'NDCG@20': '0.0450'}
+{'Epoch': 51, 'name': 'mid_freq', 'HIT@5': '0.0033', 'NDCG@5': '0.0022', 'HIT@10': '0.0049', 'NDCG@10': '0.0027', 'HIT@20': '0.0076', 'NDCG@20': '0.0034'}
+{'Epoch': 51, 'name': 'low_freq', 'HIT@5': '0.0016', 'NDCG@5': '0.0010', 'HIT@10': '0.0034', 'NDCG@10': '0.0016', 'HIT@20': '0.0045', 'NDCG@20': '0.0019'}
+{'Epoch': 51, 'name': 'all', 'HIT@5': '0.0297', 'NDCG@5': '0.0192', 'HIT@10': '0.0480', 'NDCG@10': '0.0251', 'HIT@20': '0.0737', 'NDCG@20': '0.0315'}
+EarlyStopping counter: 1 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 52, 'rec_avg_loss': '0.5772', 'joint_avg_loss': '0.9857', 'cl_avg_loss': '4.0854', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.0854'}
+Recommendation EP_test:52: 100%|| 35/35 [00:08<00:00,  4.11it/s]
+{'Epoch': 52, 'name': 'high_freq', 'HIT@5': '0.0427', 'NDCG@5': '0.0277', 'HIT@10': '0.0677', 'NDCG@10': '0.0357', 'HIT@20': '0.1043', 'NDCG@20': '0.0449'}
+{'Epoch': 52, 'name': 'mid_freq', 'HIT@5': '0.0030', 'NDCG@5': '0.0021', 'HIT@10': '0.0057', 'NDCG@10': '0.0030', 'HIT@20': '0.0085', 'NDCG@20': '0.0037'}
+{'Epoch': 52, 'name': 'low_freq', 'HIT@5': '0.0023', 'NDCG@5': '0.0016', 'HIT@10': '0.0038', 'NDCG@10': '0.0021', 'HIT@20': '0.0045', 'NDCG@20': '0.0023'}
+{'Epoch': 52, 'name': 'all', 'HIT@5': '0.0299', 'NDCG@5': '0.0195', 'HIT@10': '0.0476', 'NDCG@10': '0.0252', 'HIT@20': '0.0732', 'NDCG@20': '0.0315'}
+EarlyStopping counter: 2 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.81it/s]
+{'epoch': 53, 'rec_avg_loss': '0.5724', 'joint_avg_loss': '0.9803', 'cl_avg_loss': '4.0794', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.0794'}
+Recommendation EP_test:53: 100%|| 35/35 [00:08<00:00,  4.13it/s]
+{'Epoch': 53, 'name': 'high_freq', 'HIT@5': '0.0444', 'NDCG@5': '0.0285', 'HIT@10': '0.0683', 'NDCG@10': '0.0362', 'HIT@20': '0.1046', 'NDCG@20': '0.0453'}
+{'Epoch': 53, 'name': 'mid_freq', 'HIT@5': '0.0030', 'NDCG@5': '0.0023', 'HIT@10': '0.0047', 'NDCG@10': '0.0029', 'HIT@20': '0.0075', 'NDCG@20': '0.0036'}
+{'Epoch': 53, 'name': 'low_freq', 'HIT@5': '0.0018', 'NDCG@5': '0.0016', 'HIT@10': '0.0036', 'NDCG@10': '0.0021', 'HIT@20': '0.0043', 'NDCG@20': '0.0023'}
+{'Epoch': 53, 'name': 'all', 'HIT@5': '0.0310', 'NDCG@5': '0.0201', 'HIT@10': '0.0479', 'NDCG@10': '0.0255', 'HIT@20': '0.0731', 'NDCG@20': '0.0318'}
+EarlyStopping counter: 3 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.80it/s]
+{'epoch': 54, 'rec_avg_loss': '0.5700', 'joint_avg_loss': '0.9774', 'cl_avg_loss': '4.0737', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.0737'}
+Recommendation EP_test:54: 100%|| 35/35 [00:08<00:00,  4.13it/s]
+{'Epoch': 54, 'name': 'high_freq', 'HIT@5': '0.0436', 'NDCG@5': '0.0282', 'HIT@10': '0.0697', 'NDCG@10': '0.0366', 'HIT@20': '0.1073', 'NDCG@20': '0.0460'}
+{'Epoch': 54, 'name': 'mid_freq', 'HIT@5': '0.0037', 'NDCG@5': '0.0025', 'HIT@10': '0.0049', 'NDCG@10': '0.0029', 'HIT@20': '0.0079', 'NDCG@20': '0.0036'}
+{'Epoch': 54, 'name': 'low_freq', 'HIT@5': '0.0023', 'NDCG@5': '0.0018', 'HIT@10': '0.0027', 'NDCG@10': '0.0019', 'HIT@20': '0.0045', 'NDCG@20': '0.0024'}
+{'Epoch': 54, 'name': 'all', 'HIT@5': '0.0306', 'NDCG@5': '0.0199', 'HIT@10': '0.0487', 'NDCG@10': '0.0257', 'HIT@20': '0.0751', 'NDCG@20': '0.0323'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.81it/s]
+{'epoch': 55, 'rec_avg_loss': '0.5637', 'joint_avg_loss': '0.9686', 'cl_avg_loss': '4.0486', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.0486'}
+Recommendation EP_test:55: 100%|| 35/35 [00:08<00:00,  4.07it/s]
+{'Epoch': 55, 'name': 'high_freq', 'HIT@5': '0.0442', 'NDCG@5': '0.0278', 'HIT@10': '0.0707', 'NDCG@10': '0.0363', 'HIT@20': '0.1062', 'NDCG@20': '0.0453'}
+{'Epoch': 55, 'name': 'mid_freq', 'HIT@5': '0.0034', 'NDCG@5': '0.0024', 'HIT@10': '0.0056', 'NDCG@10': '0.0031', 'HIT@20': '0.0076', 'NDCG@20': '0.0036'}
+{'Epoch': 55, 'name': 'low_freq', 'HIT@5': '0.0025', 'NDCG@5': '0.0018', 'HIT@10': '0.0032', 'NDCG@10': '0.0021', 'HIT@20': '0.0052', 'NDCG@20': '0.0026'}
+{'Epoch': 55, 'name': 'all', 'HIT@5': '0.0310', 'NDCG@5': '0.0196', 'HIT@10': '0.0496', 'NDCG@10': '0.0256', 'HIT@20': '0.0744', 'NDCG@20': '0.0318'}
+EarlyStopping counter: 1 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 56, 'rec_avg_loss': '0.5618', 'joint_avg_loss': '0.9670', 'cl_avg_loss': '4.0513', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.0513'}
+Recommendation EP_test:56: 100%|| 35/35 [00:08<00:00,  4.22it/s]
+{'Epoch': 56, 'name': 'high_freq', 'HIT@5': '0.0449', 'NDCG@5': '0.0287', 'HIT@10': '0.0693', 'NDCG@10': '0.0365', 'HIT@20': '0.1042', 'NDCG@20': '0.0453'}
+{'Epoch': 56, 'name': 'mid_freq', 'HIT@5': '0.0033', 'NDCG@5': '0.0024', 'HIT@10': '0.0055', 'NDCG@10': '0.0031', 'HIT@20': '0.0089', 'NDCG@20': '0.0040'}
+{'Epoch': 56, 'name': 'low_freq', 'HIT@5': '0.0029', 'NDCG@5': '0.0021', 'HIT@10': '0.0041', 'NDCG@10': '0.0024', 'HIT@20': '0.0052', 'NDCG@20': '0.0027'}
+{'Epoch': 56, 'name': 'all', 'HIT@5': '0.0316', 'NDCG@5': '0.0202', 'HIT@10': '0.0487', 'NDCG@10': '0.0257', 'HIT@20': '0.0733', 'NDCG@20': '0.0319'}
+EarlyStopping counter: 2 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.81it/s]
+{'epoch': 57, 'rec_avg_loss': '0.5609', 'joint_avg_loss': '0.9644', 'cl_avg_loss': '4.0354', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.0354'}
+Recommendation EP_test:57: 100%|| 35/35 [00:08<00:00,  4.12it/s]
+{'Epoch': 57, 'name': 'high_freq', 'HIT@5': '0.0436', 'NDCG@5': '0.0282', 'HIT@10': '0.0694', 'NDCG@10': '0.0364', 'HIT@20': '0.1045', 'NDCG@20': '0.0452'}
+{'Epoch': 57, 'name': 'mid_freq', 'HIT@5': '0.0030', 'NDCG@5': '0.0018', 'HIT@10': '0.0057', 'NDCG@10': '0.0027', 'HIT@20': '0.0082', 'NDCG@20': '0.0033'}
+{'Epoch': 57, 'name': 'low_freq', 'HIT@5': '0.0025', 'NDCG@5': '0.0017', 'HIT@10': '0.0038', 'NDCG@10': '0.0021', 'HIT@20': '0.0054', 'NDCG@20': '0.0025'}
+{'Epoch': 57, 'name': 'all', 'HIT@5': '0.0305', 'NDCG@5': '0.0197', 'HIT@10': '0.0488', 'NDCG@10': '0.0256', 'HIT@20': '0.0733', 'NDCG@20': '0.0317'}
+EarlyStopping counter: 3 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 58, 'rec_avg_loss': '0.5542', 'joint_avg_loss': '0.9564', 'cl_avg_loss': '4.0218', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.0218'}
+Recommendation EP_test:58: 100%|| 35/35 [00:08<00:00,  4.05it/s]
+{'Epoch': 58, 'name': 'high_freq', 'HIT@5': '0.0442', 'NDCG@5': '0.0278', 'HIT@10': '0.0677', 'NDCG@10': '0.0354', 'HIT@20': '0.1043', 'NDCG@20': '0.0446'}
+{'Epoch': 58, 'name': 'mid_freq', 'HIT@5': '0.0033', 'NDCG@5': '0.0022', 'HIT@10': '0.0056', 'NDCG@10': '0.0029', 'HIT@20': '0.0080', 'NDCG@20': '0.0035'}
+{'Epoch': 58, 'name': 'low_freq', 'HIT@5': '0.0027', 'NDCG@5': '0.0018', 'HIT@10': '0.0043', 'NDCG@10': '0.0023', 'HIT@20': '0.0061', 'NDCG@20': '0.0027'}
+{'Epoch': 58, 'name': 'all', 'HIT@5': '0.0310', 'NDCG@5': '0.0196', 'HIT@10': '0.0477', 'NDCG@10': '0.0249', 'HIT@20': '0.0733', 'NDCG@20': '0.0314'}
+EarlyStopping counter: 4 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 59, 'rec_avg_loss': '0.5500', 'joint_avg_loss': '0.9518', 'cl_avg_loss': '4.0184', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.0184'}
+Recommendation EP_test:59: 100%|| 35/35 [00:08<00:00,  4.13it/s]
+{'Epoch': 59, 'name': 'high_freq', 'HIT@5': '0.0441', 'NDCG@5': '0.0282', 'HIT@10': '0.0677', 'NDCG@10': '0.0358', 'HIT@20': '0.1046', 'NDCG@20': '0.0451'}
+{'Epoch': 59, 'name': 'mid_freq', 'HIT@5': '0.0040', 'NDCG@5': '0.0027', 'HIT@10': '0.0056', 'NDCG@10': '0.0033', 'HIT@20': '0.0090', 'NDCG@20': '0.0041'}
+{'Epoch': 59, 'name': 'low_freq', 'HIT@5': '0.0034', 'NDCG@5': '0.0020', 'HIT@10': '0.0045', 'NDCG@10': '0.0024', 'HIT@20': '0.0059', 'NDCG@20': '0.0027'}
+{'Epoch': 59, 'name': 'all', 'HIT@5': '0.0312', 'NDCG@5': '0.0200', 'HIT@10': '0.0477', 'NDCG@10': '0.0253', 'HIT@20': '0.0736', 'NDCG@20': '0.0318'}
+EarlyStopping counter: 5 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 60, 'rec_avg_loss': '0.5483', 'joint_avg_loss': '0.9494', 'cl_avg_loss': '4.0101', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.0101'}
+Recommendation EP_test:60: 100%|| 35/35 [00:08<00:00,  4.11it/s]
+{'Epoch': 60, 'name': 'high_freq', 'HIT@5': '0.0435', 'NDCG@5': '0.0277', 'HIT@10': '0.0699', 'NDCG@10': '0.0361', 'HIT@20': '0.1044', 'NDCG@20': '0.0447'}
+{'Epoch': 60, 'name': 'mid_freq', 'HIT@5': '0.0036', 'NDCG@5': '0.0022', 'HIT@10': '0.0056', 'NDCG@10': '0.0029', 'HIT@20': '0.0092', 'NDCG@20': '0.0038'}
+{'Epoch': 60, 'name': 'low_freq', 'HIT@5': '0.0029', 'NDCG@5': '0.0019', 'HIT@10': '0.0038', 'NDCG@10': '0.0022', 'HIT@20': '0.0059', 'NDCG@20': '0.0027'}
+{'Epoch': 60, 'name': 'all', 'HIT@5': '0.0307', 'NDCG@5': '0.0195', 'HIT@10': '0.0491', 'NDCG@10': '0.0254', 'HIT@20': '0.0736', 'NDCG@20': '0.0315'}
+EarlyStopping counter: 6 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 61, 'rec_avg_loss': '0.5458', 'joint_avg_loss': '0.9455', 'cl_avg_loss': '3.9972', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.9972'}
+Recommendation EP_test:61: 100%|| 35/35 [00:08<00:00,  4.10it/s]
+{'Epoch': 61, 'name': 'high_freq', 'HIT@5': '0.0439', 'NDCG@5': '0.0281', 'HIT@10': '0.0692', 'NDCG@10': '0.0362', 'HIT@20': '0.1057', 'NDCG@20': '0.0454'}
+{'Epoch': 61, 'name': 'mid_freq', 'HIT@5': '0.0040', 'NDCG@5': '0.0028', 'HIT@10': '0.0059', 'NDCG@10': '0.0034', 'HIT@20': '0.0095', 'NDCG@20': '0.0043'}
+{'Epoch': 61, 'name': 'low_freq', 'HIT@5': '0.0034', 'NDCG@5': '0.0024', 'HIT@10': '0.0045', 'NDCG@10': '0.0027', 'HIT@20': '0.0059', 'NDCG@20': '0.0031'}
+{'Epoch': 61, 'name': 'all', 'HIT@5': '0.0310', 'NDCG@5': '0.0199', 'HIT@10': '0.0488', 'NDCG@10': '0.0256', 'HIT@20': '0.0745', 'NDCG@20': '0.0321'}
+EarlyStopping counter: 7 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 62, 'rec_avg_loss': '0.5430', 'joint_avg_loss': '0.9432', 'cl_avg_loss': '4.0019', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '4.0019'}
+Recommendation EP_test:62: 100%|| 35/35 [00:08<00:00,  4.09it/s]
+{'Epoch': 62, 'name': 'high_freq', 'HIT@5': '0.0439', 'NDCG@5': '0.0282', 'HIT@10': '0.0693', 'NDCG@10': '0.0364', 'HIT@20': '0.1053', 'NDCG@20': '0.0454'}
+{'Epoch': 62, 'name': 'mid_freq', 'HIT@5': '0.0037', 'NDCG@5': '0.0024', 'HIT@10': '0.0065', 'NDCG@10': '0.0033', 'HIT@20': '0.0098', 'NDCG@20': '0.0041'}
+{'Epoch': 62, 'name': 'low_freq', 'HIT@5': '0.0032', 'NDCG@5': '0.0023', 'HIT@10': '0.0045', 'NDCG@10': '0.0027', 'HIT@20': '0.0061', 'NDCG@20': '0.0031'}
+{'Epoch': 62, 'name': 'all', 'HIT@5': '0.0310', 'NDCG@5': '0.0200', 'HIT@10': '0.0490', 'NDCG@10': '0.0257', 'HIT@20': '0.0743', 'NDCG@20': '0.0321'}
+EarlyStopping counter: 8 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 63, 'rec_avg_loss': '0.5357', 'joint_avg_loss': '0.9346', 'cl_avg_loss': '3.9891', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.9891'}
+Recommendation EP_test:63: 100%|| 35/35 [00:08<00:00,  4.06it/s]
+{'Epoch': 63, 'name': 'high_freq', 'HIT@5': '0.0441', 'NDCG@5': '0.0287', 'HIT@10': '0.0692', 'NDCG@10': '0.0369', 'HIT@20': '0.1060', 'NDCG@20': '0.0461'}
+{'Epoch': 63, 'name': 'mid_freq', 'HIT@5': '0.0042', 'NDCG@5': '0.0029', 'HIT@10': '0.0070', 'NDCG@10': '0.0038', 'HIT@20': '0.0103', 'NDCG@20': '0.0046'}
+{'Epoch': 63, 'name': 'low_freq', 'HIT@5': '0.0027', 'NDCG@5': '0.0018', 'HIT@10': '0.0048', 'NDCG@10': '0.0025', 'HIT@20': '0.0059', 'NDCG@20': '0.0028'}
+{'Epoch': 63, 'name': 'all', 'HIT@5': '0.0311', 'NDCG@5': '0.0203', 'HIT@10': '0.0490', 'NDCG@10': '0.0261', 'HIT@20': '0.0749', 'NDCG@20': '0.0326'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.81it/s]
+{'epoch': 64, 'rec_avg_loss': '0.5358', 'joint_avg_loss': '0.9334', 'cl_avg_loss': '3.9761', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.9761'}
+Recommendation EP_test:64: 100%|| 35/35 [00:08<00:00,  4.17it/s]
+{'Epoch': 64, 'name': 'high_freq', 'HIT@5': '0.0448', 'NDCG@5': '0.0291', 'HIT@10': '0.0684', 'NDCG@10': '0.0367', 'HIT@20': '0.1060', 'NDCG@20': '0.0462'}
+{'Epoch': 64, 'name': 'mid_freq', 'HIT@5': '0.0036', 'NDCG@5': '0.0024', 'HIT@10': '0.0069', 'NDCG@10': '0.0034', 'HIT@20': '0.0095', 'NDCG@20': '0.0040'}
+{'Epoch': 64, 'name': 'low_freq', 'HIT@5': '0.0032', 'NDCG@5': '0.0021', 'HIT@10': '0.0043', 'NDCG@10': '0.0025', 'HIT@20': '0.0057', 'NDCG@20': '0.0028'}
+{'Epoch': 64, 'name': 'all', 'HIT@5': '0.0316', 'NDCG@5': '0.0205', 'HIT@10': '0.0484', 'NDCG@10': '0.0260', 'HIT@20': '0.0747', 'NDCG@20': '0.0326'}
+EarlyStopping counter: 1 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 65, 'rec_avg_loss': '0.5344', 'joint_avg_loss': '0.9301', 'cl_avg_loss': '3.9572', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.9572'}
+Recommendation EP_test:65: 100%|| 35/35 [00:08<00:00,  4.12it/s]
+{'Epoch': 65, 'name': 'high_freq', 'HIT@5': '0.0453', 'NDCG@5': '0.0296', 'HIT@10': '0.0692', 'NDCG@10': '0.0372', 'HIT@20': '0.1064', 'NDCG@20': '0.0466'}
+{'Epoch': 65, 'name': 'mid_freq', 'HIT@5': '0.0043', 'NDCG@5': '0.0029', 'HIT@10': '0.0059', 'NDCG@10': '0.0034', 'HIT@20': '0.0092', 'NDCG@20': '0.0043'}
+{'Epoch': 65, 'name': 'low_freq', 'HIT@5': '0.0025', 'NDCG@5': '0.0018', 'HIT@10': '0.0043', 'NDCG@10': '0.0024', 'HIT@20': '0.0066', 'NDCG@20': '0.0030'}
+{'Epoch': 65, 'name': 'all', 'HIT@5': '0.0319', 'NDCG@5': '0.0209', 'HIT@10': '0.0487', 'NDCG@10': '0.0263', 'HIT@20': '0.0750', 'NDCG@20': '0.0329'}
+Validation score increased.  Saving model ...
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.81it/s]
+{'epoch': 66, 'rec_avg_loss': '0.5303', 'joint_avg_loss': '0.9253', 'cl_avg_loss': '3.9504', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.9504'}
+Recommendation EP_test:66: 100%|| 35/35 [00:08<00:00,  4.14it/s]
+{'Epoch': 66, 'name': 'high_freq', 'HIT@5': '0.0446', 'NDCG@5': '0.0286', 'HIT@10': '0.0695', 'NDCG@10': '0.0367', 'HIT@20': '0.1056', 'NDCG@20': '0.0457'}
+{'Epoch': 66, 'name': 'mid_freq', 'HIT@5': '0.0042', 'NDCG@5': '0.0028', 'HIT@10': '0.0072', 'NDCG@10': '0.0037', 'HIT@20': '0.0106', 'NDCG@20': '0.0046'}
+{'Epoch': 66, 'name': 'low_freq', 'HIT@5': '0.0034', 'NDCG@5': '0.0021', 'HIT@10': '0.0043', 'NDCG@10': '0.0023', 'HIT@20': '0.0061', 'NDCG@20': '0.0028'}
+{'Epoch': 66, 'name': 'all', 'HIT@5': '0.0315', 'NDCG@5': '0.0203', 'HIT@10': '0.0492', 'NDCG@10': '0.0260', 'HIT@20': '0.0747', 'NDCG@20': '0.0323'}
+EarlyStopping counter: 1 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 67, 'rec_avg_loss': '0.5276', 'joint_avg_loss': '0.9225', 'cl_avg_loss': '3.9489', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.9489'}
+Recommendation EP_test:67: 100%|| 35/35 [00:08<00:00,  4.17it/s]
+{'Epoch': 67, 'name': 'high_freq', 'HIT@5': '0.0443', 'NDCG@5': '0.0285', 'HIT@10': '0.0693', 'NDCG@10': '0.0364', 'HIT@20': '0.1051', 'NDCG@20': '0.0454'}
+{'Epoch': 67, 'name': 'mid_freq', 'HIT@5': '0.0042', 'NDCG@5': '0.0029', 'HIT@10': '0.0069', 'NDCG@10': '0.0038', 'HIT@20': '0.0103', 'NDCG@20': '0.0046'}
+{'Epoch': 67, 'name': 'low_freq', 'HIT@5': '0.0027', 'NDCG@5': '0.0016', 'HIT@10': '0.0041', 'NDCG@10': '0.0021', 'HIT@20': '0.0057', 'NDCG@20': '0.0025'}
+{'Epoch': 67, 'name': 'all', 'HIT@5': '0.0313', 'NDCG@5': '0.0201', 'HIT@10': '0.0490', 'NDCG@10': '0.0258', 'HIT@20': '0.0742', 'NDCG@20': '0.0321'}
+EarlyStopping counter: 2 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 68, 'rec_avg_loss': '0.5241', 'joint_avg_loss': '0.9189', 'cl_avg_loss': '3.9480', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.9480'}
+Recommendation EP_test:68: 100%|| 35/35 [00:08<00:00,  4.16it/s]
+{'Epoch': 68, 'name': 'high_freq', 'HIT@5': '0.0448', 'NDCG@5': '0.0289', 'HIT@10': '0.0697', 'NDCG@10': '0.0369', 'HIT@20': '0.1046', 'NDCG@20': '0.0456'}
+{'Epoch': 68, 'name': 'mid_freq', 'HIT@5': '0.0043', 'NDCG@5': '0.0031', 'HIT@10': '0.0066', 'NDCG@10': '0.0039', 'HIT@20': '0.0105', 'NDCG@20': '0.0048'}
+{'Epoch': 68, 'name': 'low_freq', 'HIT@5': '0.0029', 'NDCG@5': '0.0017', 'HIT@10': '0.0045', 'NDCG@10': '0.0022', 'HIT@20': '0.0061', 'NDCG@20': '0.0026'}
+{'Epoch': 68, 'name': 'all', 'HIT@5': '0.0317', 'NDCG@5': '0.0205', 'HIT@10': '0.0492', 'NDCG@10': '0.0261', 'HIT@20': '0.0739', 'NDCG@20': '0.0323'}
+EarlyStopping counter: 3 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 69, 'rec_avg_loss': '0.5229', 'joint_avg_loss': '0.9165', 'cl_avg_loss': '3.9364', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.9364'}
+Recommendation EP_test:69: 100%|| 35/35 [00:08<00:00,  4.10it/s]
+{'Epoch': 69, 'name': 'high_freq', 'HIT@5': '0.0445', 'NDCG@5': '0.0285', 'HIT@10': '0.0701', 'NDCG@10': '0.0367', 'HIT@20': '0.1051', 'NDCG@20': '0.0455'}
+{'Epoch': 69, 'name': 'mid_freq', 'HIT@5': '0.0040', 'NDCG@5': '0.0028', 'HIT@10': '0.0062', 'NDCG@10': '0.0035', 'HIT@20': '0.0103', 'NDCG@20': '0.0046'}
+{'Epoch': 69, 'name': 'low_freq', 'HIT@5': '0.0020', 'NDCG@5': '0.0014', 'HIT@10': '0.0045', 'NDCG@10': '0.0022', 'HIT@20': '0.0061', 'NDCG@20': '0.0026'}
+{'Epoch': 69, 'name': 'all', 'HIT@5': '0.0313', 'NDCG@5': '0.0201', 'HIT@10': '0.0494', 'NDCG@10': '0.0259', 'HIT@20': '0.0742', 'NDCG@20': '0.0322'}
+EarlyStopping counter: 4 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 70, 'rec_avg_loss': '0.5211', 'joint_avg_loss': '0.9153', 'cl_avg_loss': '3.9418', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.9418'}
+Recommendation EP_test:70: 100%|| 35/35 [00:08<00:00,  4.22it/s]
+{'Epoch': 70, 'name': 'high_freq', 'HIT@5': '0.0439', 'NDCG@5': '0.0287', 'HIT@10': '0.0693', 'NDCG@10': '0.0368', 'HIT@20': '0.1062', 'NDCG@20': '0.0460'}
+{'Epoch': 70, 'name': 'mid_freq', 'HIT@5': '0.0040', 'NDCG@5': '0.0029', 'HIT@10': '0.0057', 'NDCG@10': '0.0035', 'HIT@20': '0.0096', 'NDCG@20': '0.0044'}
+{'Epoch': 70, 'name': 'low_freq', 'HIT@5': '0.0023', 'NDCG@5': '0.0014', 'HIT@10': '0.0043', 'NDCG@10': '0.0020', 'HIT@20': '0.0059', 'NDCG@20': '0.0024'}
+{'Epoch': 70, 'name': 'all', 'HIT@5': '0.0310', 'NDCG@5': '0.0203', 'HIT@10': '0.0488', 'NDCG@10': '0.0260', 'HIT@20': '0.0749', 'NDCG@20': '0.0325'}
+EarlyStopping counter: 5 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 71, 'rec_avg_loss': '0.5196', 'joint_avg_loss': '0.9121', 'cl_avg_loss': '3.9250', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.9250'}
+Recommendation EP_test:71: 100%|| 35/35 [00:08<00:00,  4.17it/s]
+{'Epoch': 71, 'name': 'high_freq', 'HIT@5': '0.0443', 'NDCG@5': '0.0286', 'HIT@10': '0.0687', 'NDCG@10': '0.0363', 'HIT@20': '0.1042', 'NDCG@20': '0.0453'}
+{'Epoch': 71, 'name': 'mid_freq', 'HIT@5': '0.0043', 'NDCG@5': '0.0030', 'HIT@10': '0.0063', 'NDCG@10': '0.0037', 'HIT@20': '0.0099', 'NDCG@20': '0.0046'}
+{'Epoch': 71, 'name': 'low_freq', 'HIT@5': '0.0023', 'NDCG@5': '0.0017', 'HIT@10': '0.0048', 'NDCG@10': '0.0025', 'HIT@20': '0.0052', 'NDCG@20': '0.0026'}
+{'Epoch': 71, 'name': 'all', 'HIT@5': '0.0313', 'NDCG@5': '0.0202', 'HIT@10': '0.0485', 'NDCG@10': '0.0257', 'HIT@20': '0.0735', 'NDCG@20': '0.0320'}
+EarlyStopping counter: 6 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 72, 'rec_avg_loss': '0.5161', 'joint_avg_loss': '0.9082', 'cl_avg_loss': '3.9209', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.9209'}
+Recommendation EP_test:72: 100%|| 35/35 [00:08<00:00,  4.18it/s]
+{'Epoch': 72, 'name': 'high_freq', 'HIT@5': '0.0443', 'NDCG@5': '0.0286', 'HIT@10': '0.0690', 'NDCG@10': '0.0365', 'HIT@20': '0.1058', 'NDCG@20': '0.0458'}
+{'Epoch': 72, 'name': 'mid_freq', 'HIT@5': '0.0047', 'NDCG@5': '0.0029', 'HIT@10': '0.0069', 'NDCG@10': '0.0036', 'HIT@20': '0.0102', 'NDCG@20': '0.0044'}
+{'Epoch': 72, 'name': 'low_freq', 'HIT@5': '0.0032', 'NDCG@5': '0.0019', 'HIT@10': '0.0043', 'NDCG@10': '0.0022', 'HIT@20': '0.0054', 'NDCG@20': '0.0025'}
+{'Epoch': 72, 'name': 'all', 'HIT@5': '0.0314', 'NDCG@5': '0.0203', 'HIT@10': '0.0488', 'NDCG@10': '0.0258', 'HIT@20': '0.0747', 'NDCG@20': '0.0323'}
+EarlyStopping counter: 7 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 73, 'rec_avg_loss': '0.5131', 'joint_avg_loss': '0.9036', 'cl_avg_loss': '3.9051', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.9051'}
+Recommendation EP_test:73: 100%|| 35/35 [00:08<00:00,  4.20it/s]
+{'Epoch': 73, 'name': 'high_freq', 'HIT@5': '0.0449', 'NDCG@5': '0.0285', 'HIT@10': '0.0690', 'NDCG@10': '0.0362', 'HIT@20': '0.1062', 'NDCG@20': '0.0455'}
+{'Epoch': 73, 'name': 'mid_freq', 'HIT@5': '0.0040', 'NDCG@5': '0.0026', 'HIT@10': '0.0068', 'NDCG@10': '0.0034', 'HIT@20': '0.0108', 'NDCG@20': '0.0044'}
+{'Epoch': 73, 'name': 'low_freq', 'HIT@5': '0.0023', 'NDCG@5': '0.0014', 'HIT@10': '0.0036', 'NDCG@10': '0.0019', 'HIT@20': '0.0057', 'NDCG@20': '0.0024'}
+{'Epoch': 73, 'name': 'all', 'HIT@5': '0.0316', 'NDCG@5': '0.0200', 'HIT@10': '0.0487', 'NDCG@10': '0.0256', 'HIT@20': '0.0751', 'NDCG@20': '0.0321'}
+EarlyStopping counter: 8 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 74, 'rec_avg_loss': '0.5103', 'joint_avg_loss': '0.9018', 'cl_avg_loss': '3.9149', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.9149'}
+Recommendation EP_test:74: 100%|| 35/35 [00:08<00:00,  4.17it/s]
+{'Epoch': 74, 'name': 'high_freq', 'HIT@5': '0.0441', 'NDCG@5': '0.0280', 'HIT@10': '0.0689', 'NDCG@10': '0.0360', 'HIT@20': '0.1041', 'NDCG@20': '0.0448'}
+{'Epoch': 74, 'name': 'mid_freq', 'HIT@5': '0.0042', 'NDCG@5': '0.0028', 'HIT@10': '0.0065', 'NDCG@10': '0.0036', 'HIT@20': '0.0102', 'NDCG@20': '0.0045'}
+{'Epoch': 74, 'name': 'low_freq', 'HIT@5': '0.0029', 'NDCG@5': '0.0019', 'HIT@10': '0.0045', 'NDCG@10': '0.0023', 'HIT@20': '0.0066', 'NDCG@20': '0.0028'}
+{'Epoch': 74, 'name': 'all', 'HIT@5': '0.0312', 'NDCG@5': '0.0198', 'HIT@10': '0.0487', 'NDCG@10': '0.0255', 'HIT@20': '0.0736', 'NDCG@20': '0.0317'}
+EarlyStopping counter: 9 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 75, 'rec_avg_loss': '0.5099', 'joint_avg_loss': '0.9000', 'cl_avg_loss': '3.9008', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.9008'}
+Recommendation EP_test:75: 100%|| 35/35 [00:08<00:00,  4.04it/s]
+{'Epoch': 75, 'name': 'high_freq', 'HIT@5': '0.0443', 'NDCG@5': '0.0285', 'HIT@10': '0.0697', 'NDCG@10': '0.0366', 'HIT@20': '0.1056', 'NDCG@20': '0.0456'}
+{'Epoch': 75, 'name': 'mid_freq', 'HIT@5': '0.0034', 'NDCG@5': '0.0026', 'HIT@10': '0.0060', 'NDCG@10': '0.0034', 'HIT@20': '0.0098', 'NDCG@20': '0.0043'}
+{'Epoch': 75, 'name': 'low_freq', 'HIT@5': '0.0029', 'NDCG@5': '0.0020', 'HIT@10': '0.0045', 'NDCG@10': '0.0025', 'HIT@20': '0.0066', 'NDCG@20': '0.0030'}
+{'Epoch': 75, 'name': 'all', 'HIT@5': '0.0312', 'NDCG@5': '0.0201', 'HIT@10': '0.0491', 'NDCG@10': '0.0259', 'HIT@20': '0.0746', 'NDCG@20': '0.0323'}
+EarlyStopping counter: 10 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 76, 'rec_avg_loss': '0.5072', 'joint_avg_loss': '0.8971', 'cl_avg_loss': '3.8983', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.8983'}
+Recommendation EP_test:76: 100%|| 35/35 [00:08<00:00,  4.11it/s]
+{'Epoch': 76, 'name': 'high_freq', 'HIT@5': '0.0444', 'NDCG@5': '0.0283', 'HIT@10': '0.0699', 'NDCG@10': '0.0364', 'HIT@20': '0.1062', 'NDCG@20': '0.0456'}
+{'Epoch': 76, 'name': 'mid_freq', 'HIT@5': '0.0039', 'NDCG@5': '0.0027', 'HIT@10': '0.0062', 'NDCG@10': '0.0034', 'HIT@20': '0.0090', 'NDCG@20': '0.0041'}
+{'Epoch': 76, 'name': 'low_freq', 'HIT@5': '0.0027', 'NDCG@5': '0.0018', 'HIT@10': '0.0038', 'NDCG@10': '0.0022', 'HIT@20': '0.0054', 'NDCG@20': '0.0026'}
+{'Epoch': 76, 'name': 'all', 'HIT@5': '0.0313', 'NDCG@5': '0.0200', 'HIT@10': '0.0492', 'NDCG@10': '0.0257', 'HIT@20': '0.0747', 'NDCG@20': '0.0321'}
+EarlyStopping counter: 11 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 77, 'rec_avg_loss': '0.5020', 'joint_avg_loss': '0.8915', 'cl_avg_loss': '3.8942', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.8942'}
+Recommendation EP_test:77: 100%|| 35/35 [00:08<00:00,  4.19it/s]
+{'Epoch': 77, 'name': 'high_freq', 'HIT@5': '0.0435', 'NDCG@5': '0.0275', 'HIT@10': '0.0682', 'NDCG@10': '0.0354', 'HIT@20': '0.1042', 'NDCG@20': '0.0445'}
+{'Epoch': 77, 'name': 'mid_freq', 'HIT@5': '0.0039', 'NDCG@5': '0.0026', 'HIT@10': '0.0065', 'NDCG@10': '0.0034', 'HIT@20': '0.0093', 'NDCG@20': '0.0042'}
+{'Epoch': 77, 'name': 'low_freq', 'HIT@5': '0.0029', 'NDCG@5': '0.0018', 'HIT@10': '0.0041', 'NDCG@10': '0.0022', 'HIT@20': '0.0050', 'NDCG@20': '0.0024'}
+{'Epoch': 77, 'name': 'all', 'HIT@5': '0.0307', 'NDCG@5': '0.0194', 'HIT@10': '0.0481', 'NDCG@10': '0.0250', 'HIT@20': '0.0733', 'NDCG@20': '0.0314'}
+EarlyStopping counter: 12 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.78it/s]
+{'epoch': 78, 'rec_avg_loss': '0.5022', 'joint_avg_loss': '0.8903', 'cl_avg_loss': '3.8814', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.8814'}
+Recommendation EP_test:78: 100%|| 35/35 [00:08<00:00,  4.04it/s]
+{'Epoch': 78, 'name': 'high_freq', 'HIT@5': '0.0430', 'NDCG@5': '0.0275', 'HIT@10': '0.0684', 'NDCG@10': '0.0356', 'HIT@20': '0.1033', 'NDCG@20': '0.0444'}
+{'Epoch': 78, 'name': 'mid_freq', 'HIT@5': '0.0045', 'NDCG@5': '0.0030', 'HIT@10': '0.0069', 'NDCG@10': '0.0038', 'HIT@20': '0.0111', 'NDCG@20': '0.0049'}
+{'Epoch': 78, 'name': 'low_freq', 'HIT@5': '0.0034', 'NDCG@5': '0.0021', 'HIT@10': '0.0048', 'NDCG@10': '0.0026', 'HIT@20': '0.0061', 'NDCG@20': '0.0029'}
+{'Epoch': 78, 'name': 'all', 'HIT@5': '0.0306', 'NDCG@5': '0.0196', 'HIT@10': '0.0485', 'NDCG@10': '0.0253', 'HIT@20': '0.0732', 'NDCG@20': '0.0315'}
+EarlyStopping counter: 13 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 79, 'rec_avg_loss': '0.5011', 'joint_avg_loss': '0.8877', 'cl_avg_loss': '3.8655', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.8655'}
+Recommendation EP_test:79: 100%|| 35/35 [00:08<00:00,  4.04it/s]
+{'Epoch': 79, 'name': 'high_freq', 'HIT@5': '0.0431', 'NDCG@5': '0.0274', 'HIT@10': '0.0684', 'NDCG@10': '0.0355', 'HIT@20': '0.1051', 'NDCG@20': '0.0447'}
+{'Epoch': 79, 'name': 'mid_freq', 'HIT@5': '0.0049', 'NDCG@5': '0.0032', 'HIT@10': '0.0065', 'NDCG@10': '0.0037', 'HIT@20': '0.0122', 'NDCG@20': '0.0052'}
+{'Epoch': 79, 'name': 'low_freq', 'HIT@5': '0.0036', 'NDCG@5': '0.0024', 'HIT@10': '0.0050', 'NDCG@10': '0.0028', 'HIT@20': '0.0059', 'NDCG@20': '0.0030'}
+{'Epoch': 79, 'name': 'all', 'HIT@5': '0.0307', 'NDCG@5': '0.0195', 'HIT@10': '0.0484', 'NDCG@10': '0.0252', 'HIT@20': '0.0746', 'NDCG@20': '0.0318'}
+EarlyStopping counter: 14 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 80, 'rec_avg_loss': '0.4990', 'joint_avg_loss': '0.8856', 'cl_avg_loss': '3.8652', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.8652'}
+Recommendation EP_test:80: 100%|| 35/35 [00:08<00:00,  4.12it/s]
+{'Epoch': 80, 'name': 'high_freq', 'HIT@5': '0.0436', 'NDCG@5': '0.0279', 'HIT@10': '0.0717', 'NDCG@10': '0.0370', 'HIT@20': '0.1050', 'NDCG@20': '0.0453'}
+{'Epoch': 80, 'name': 'mid_freq', 'HIT@5': '0.0043', 'NDCG@5': '0.0030', 'HIT@10': '0.0076', 'NDCG@10': '0.0041', 'HIT@20': '0.0119', 'NDCG@20': '0.0051'}
+{'Epoch': 80, 'name': 'low_freq', 'HIT@5': '0.0025', 'NDCG@5': '0.0018', 'HIT@10': '0.0043', 'NDCG@10': '0.0024', 'HIT@20': '0.0059', 'NDCG@20': '0.0028'}
+{'Epoch': 80, 'name': 'all', 'HIT@5': '0.0308', 'NDCG@5': '0.0198', 'HIT@10': '0.0508', 'NDCG@10': '0.0262', 'HIT@20': '0.0745', 'NDCG@20': '0.0322'}
+EarlyStopping counter: 15 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 81, 'rec_avg_loss': '0.4939', 'joint_avg_loss': '0.8805', 'cl_avg_loss': '3.8660', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.8660'}
+Recommendation EP_test:81: 100%|| 35/35 [00:08<00:00,  4.10it/s]
+{'Epoch': 81, 'name': 'high_freq', 'HIT@5': '0.0448', 'NDCG@5': '0.0288', 'HIT@10': '0.0708', 'NDCG@10': '0.0371', 'HIT@20': '0.1054', 'NDCG@20': '0.0458'}
+{'Epoch': 81, 'name': 'mid_freq', 'HIT@5': '0.0049', 'NDCG@5': '0.0034', 'HIT@10': '0.0079', 'NDCG@10': '0.0044', 'HIT@20': '0.0134', 'NDCG@20': '0.0057'}
+{'Epoch': 81, 'name': 'low_freq', 'HIT@5': '0.0032', 'NDCG@5': '0.0021', 'HIT@10': '0.0041', 'NDCG@10': '0.0024', 'HIT@20': '0.0068', 'NDCG@20': '0.0031'}
+{'Epoch': 81, 'name': 'all', 'HIT@5': '0.0319', 'NDCG@5': '0.0205', 'HIT@10': '0.0502', 'NDCG@10': '0.0264', 'HIT@20': '0.0752', 'NDCG@20': '0.0327'}
+EarlyStopping counter: 16 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 82, 'rec_avg_loss': '0.4939', 'joint_avg_loss': '0.8807', 'cl_avg_loss': '3.8678', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.8678'}
+Recommendation EP_test:82: 100%|| 35/35 [00:08<00:00,  4.10it/s]
+{'Epoch': 82, 'name': 'high_freq', 'HIT@5': '0.0450', 'NDCG@5': '0.0293', 'HIT@10': '0.0712', 'NDCG@10': '0.0377', 'HIT@20': '0.1044', 'NDCG@20': '0.0460'}
+{'Epoch': 82, 'name': 'mid_freq', 'HIT@5': '0.0047', 'NDCG@5': '0.0034', 'HIT@10': '0.0079', 'NDCG@10': '0.0043', 'HIT@20': '0.0125', 'NDCG@20': '0.0055'}
+{'Epoch': 82, 'name': 'low_freq', 'HIT@5': '0.0029', 'NDCG@5': '0.0019', 'HIT@10': '0.0045', 'NDCG@10': '0.0024', 'HIT@20': '0.0066', 'NDCG@20': '0.0029'}
+{'Epoch': 82, 'name': 'all', 'HIT@5': '0.0319', 'NDCG@5': '0.0208', 'HIT@10': '0.0506', 'NDCG@10': '0.0268', 'HIT@20': '0.0743', 'NDCG@20': '0.0327'}
+EarlyStopping counter: 17 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 83, 'rec_avg_loss': '0.4930', 'joint_avg_loss': '0.8798', 'cl_avg_loss': '3.8685', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.8685'}
+Recommendation EP_test:83: 100%|| 35/35 [00:08<00:00,  4.23it/s]
+{'Epoch': 83, 'name': 'high_freq', 'HIT@5': '0.0431', 'NDCG@5': '0.0283', 'HIT@10': '0.0690', 'NDCG@10': '0.0367', 'HIT@20': '0.1050', 'NDCG@20': '0.0457'}
+{'Epoch': 83, 'name': 'mid_freq', 'HIT@5': '0.0047', 'NDCG@5': '0.0032', 'HIT@10': '0.0073', 'NDCG@10': '0.0040', 'HIT@20': '0.0115', 'NDCG@20': '0.0051'}
+{'Epoch': 83, 'name': 'low_freq', 'HIT@5': '0.0029', 'NDCG@5': '0.0019', 'HIT@10': '0.0036', 'NDCG@10': '0.0021', 'HIT@20': '0.0063', 'NDCG@20': '0.0028'}
+{'Epoch': 83, 'name': 'all', 'HIT@5': '0.0306', 'NDCG@5': '0.0201', 'HIT@10': '0.0489', 'NDCG@10': '0.0260', 'HIT@20': '0.0744', 'NDCG@20': '0.0324'}
+EarlyStopping counter: 18 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.77it/s]
+{'epoch': 84, 'rec_avg_loss': '0.4937', 'joint_avg_loss': '0.8787', 'cl_avg_loss': '3.8504', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.8504'}
+Recommendation EP_test:84: 100%|| 35/35 [00:09<00:00,  3.85it/s]
+{'Epoch': 84, 'name': 'high_freq', 'HIT@5': '0.0429', 'NDCG@5': '0.0281', 'HIT@10': '0.0695', 'NDCG@10': '0.0366', 'HIT@20': '0.1028', 'NDCG@20': '0.0450'}
+{'Epoch': 84, 'name': 'mid_freq', 'HIT@5': '0.0047', 'NDCG@5': '0.0033', 'HIT@10': '0.0080', 'NDCG@10': '0.0043', 'HIT@20': '0.0119', 'NDCG@20': '0.0053'}
+{'Epoch': 84, 'name': 'low_freq', 'HIT@5': '0.0032', 'NDCG@5': '0.0020', 'HIT@10': '0.0048', 'NDCG@10': '0.0025', 'HIT@20': '0.0077', 'NDCG@20': '0.0032'}
+{'Epoch': 84, 'name': 'all', 'HIT@5': '0.0305', 'NDCG@5': '0.0200', 'HIT@10': '0.0494', 'NDCG@10': '0.0261', 'HIT@20': '0.0732', 'NDCG@20': '0.0321'}
+EarlyStopping counter: 19 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 85, 'rec_avg_loss': '0.4911', 'joint_avg_loss': '0.8755', 'cl_avg_loss': '3.8444', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.8444'}
+Recommendation EP_test:85: 100%|| 35/35 [00:08<00:00,  4.14it/s]
+{'Epoch': 85, 'name': 'high_freq', 'HIT@5': '0.0441', 'NDCG@5': '0.0286', 'HIT@10': '0.0695', 'NDCG@10': '0.0368', 'HIT@20': '0.1026', 'NDCG@20': '0.0451'}
+{'Epoch': 85, 'name': 'mid_freq', 'HIT@5': '0.0055', 'NDCG@5': '0.0036', 'HIT@10': '0.0072', 'NDCG@10': '0.0042', 'HIT@20': '0.0124', 'NDCG@20': '0.0055'}
+{'Epoch': 85, 'name': 'low_freq', 'HIT@5': '0.0036', 'NDCG@5': '0.0026', 'HIT@10': '0.0048', 'NDCG@10': '0.0029', 'HIT@20': '0.0066', 'NDCG@20': '0.0034'}
+{'Epoch': 85, 'name': 'all', 'HIT@5': '0.0315', 'NDCG@5': '0.0205', 'HIT@10': '0.0493', 'NDCG@10': '0.0262', 'HIT@20': '0.0730', 'NDCG@20': '0.0322'}
+EarlyStopping counter: 20 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 86, 'rec_avg_loss': '0.4883', 'joint_avg_loss': '0.8715', 'cl_avg_loss': '3.8326', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.8326'}
+Recommendation EP_test:86: 100%|| 35/35 [00:08<00:00,  4.24it/s]
+{'Epoch': 86, 'name': 'high_freq', 'HIT@5': '0.0433', 'NDCG@5': '0.0279', 'HIT@10': '0.0673', 'NDCG@10': '0.0356', 'HIT@20': '0.1041', 'NDCG@20': '0.0449'}
+{'Epoch': 86, 'name': 'mid_freq', 'HIT@5': '0.0045', 'NDCG@5': '0.0031', 'HIT@10': '0.0069', 'NDCG@10': '0.0039', 'HIT@20': '0.0112', 'NDCG@20': '0.0050'}
+{'Epoch': 86, 'name': 'low_freq', 'HIT@5': '0.0032', 'NDCG@5': '0.0023', 'HIT@10': '0.0041', 'NDCG@10': '0.0026', 'HIT@20': '0.0061', 'NDCG@20': '0.0031'}
+{'Epoch': 86, 'name': 'all', 'HIT@5': '0.0307', 'NDCG@5': '0.0199', 'HIT@10': '0.0476', 'NDCG@10': '0.0253', 'HIT@20': '0.0737', 'NDCG@20': '0.0319'}
+EarlyStopping counter: 21 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 87, 'rec_avg_loss': '0.4879', 'joint_avg_loss': '0.8707', 'cl_avg_loss': '3.8281', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.8281'}
+Recommendation EP_test:87: 100%|| 35/35 [00:08<00:00,  4.17it/s]
+{'Epoch': 87, 'name': 'high_freq', 'HIT@5': '0.0434', 'NDCG@5': '0.0279', 'HIT@10': '0.0681', 'NDCG@10': '0.0358', 'HIT@20': '0.1023', 'NDCG@20': '0.0444'}
+{'Epoch': 87, 'name': 'mid_freq', 'HIT@5': '0.0050', 'NDCG@5': '0.0033', 'HIT@10': '0.0078', 'NDCG@10': '0.0042', 'HIT@20': '0.0128', 'NDCG@20': '0.0054'}
+{'Epoch': 87, 'name': 'low_freq', 'HIT@5': '0.0032', 'NDCG@5': '0.0025', 'HIT@10': '0.0052', 'NDCG@10': '0.0031', 'HIT@20': '0.0070', 'NDCG@20': '0.0036'}
+{'Epoch': 87, 'name': 'all', 'HIT@5': '0.0309', 'NDCG@5': '0.0199', 'HIT@10': '0.0485', 'NDCG@10': '0.0256', 'HIT@20': '0.0730', 'NDCG@20': '0.0317'}
+EarlyStopping counter: 22 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.81it/s]
+{'epoch': 88, 'rec_avg_loss': '0.4822', 'joint_avg_loss': '0.8655', 'cl_avg_loss': '3.8333', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.8333'}
+Recommendation EP_test:88: 100%|| 35/35 [00:08<00:00,  4.28it/s]
+{'Epoch': 88, 'name': 'high_freq', 'HIT@5': '0.0423', 'NDCG@5': '0.0276', 'HIT@10': '0.0689', 'NDCG@10': '0.0361', 'HIT@20': '0.1032', 'NDCG@20': '0.0447'}
+{'Epoch': 88, 'name': 'mid_freq', 'HIT@5': '0.0045', 'NDCG@5': '0.0031', 'HIT@10': '0.0073', 'NDCG@10': '0.0040', 'HIT@20': '0.0125', 'NDCG@20': '0.0053'}
+{'Epoch': 88, 'name': 'low_freq', 'HIT@5': '0.0036', 'NDCG@5': '0.0023', 'HIT@10': '0.0041', 'NDCG@10': '0.0025', 'HIT@20': '0.0070', 'NDCG@20': '0.0032'}
+{'Epoch': 88, 'name': 'all', 'HIT@5': '0.0301', 'NDCG@5': '0.0197', 'HIT@10': '0.0488', 'NDCG@10': '0.0256', 'HIT@20': '0.0735', 'NDCG@20': '0.0319'}
+EarlyStopping counter: 23 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.78it/s]
+{'epoch': 89, 'rec_avg_loss': '0.4846', 'joint_avg_loss': '0.8687', 'cl_avg_loss': '3.8403', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.8403'}
+Recommendation EP_test:89: 100%|| 35/35 [00:08<00:00,  4.16it/s]
+{'Epoch': 89, 'name': 'high_freq', 'HIT@5': '0.0422', 'NDCG@5': '0.0272', 'HIT@10': '0.0672', 'NDCG@10': '0.0353', 'HIT@20': '0.1022', 'NDCG@20': '0.0441'}
+{'Epoch': 89, 'name': 'mid_freq', 'HIT@5': '0.0039', 'NDCG@5': '0.0027', 'HIT@10': '0.0083', 'NDCG@10': '0.0041', 'HIT@20': '0.0119', 'NDCG@20': '0.0050'}
+{'Epoch': 89, 'name': 'low_freq', 'HIT@5': '0.0027', 'NDCG@5': '0.0020', 'HIT@10': '0.0050', 'NDCG@10': '0.0027', 'HIT@20': '0.0072', 'NDCG@20': '0.0033'}
+{'Epoch': 89, 'name': 'all', 'HIT@5': '0.0298', 'NDCG@5': '0.0193', 'HIT@10': '0.0480', 'NDCG@10': '0.0251', 'HIT@20': '0.0727', 'NDCG@20': '0.0314'}
+EarlyStopping counter: 24 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 90, 'rec_avg_loss': '0.4836', 'joint_avg_loss': '0.8659', 'cl_avg_loss': '3.8223', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.8223'}
+Recommendation EP_test:90: 100%|| 35/35 [00:08<00:00,  4.10it/s]
+{'Epoch': 90, 'name': 'high_freq', 'HIT@5': '0.0441', 'NDCG@5': '0.0285', 'HIT@10': '0.0686', 'NDCG@10': '0.0364', 'HIT@20': '0.1043', 'NDCG@20': '0.0453'}
+{'Epoch': 90, 'name': 'mid_freq', 'HIT@5': '0.0055', 'NDCG@5': '0.0035', 'HIT@10': '0.0070', 'NDCG@10': '0.0040', 'HIT@20': '0.0125', 'NDCG@20': '0.0054'}
+{'Epoch': 90, 'name': 'low_freq', 'HIT@5': '0.0029', 'NDCG@5': '0.0020', 'HIT@10': '0.0045', 'NDCG@10': '0.0025', 'HIT@20': '0.0075', 'NDCG@20': '0.0033'}
+{'Epoch': 90, 'name': 'all', 'HIT@5': '0.0314', 'NDCG@5': '0.0203', 'HIT@10': '0.0486', 'NDCG@10': '0.0258', 'HIT@20': '0.0743', 'NDCG@20': '0.0323'}
+EarlyStopping counter: 25 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 91, 'rec_avg_loss': '0.4813', 'joint_avg_loss': '0.8639', 'cl_avg_loss': '3.8266', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.8266'}
+Recommendation EP_test:91: 100%|| 35/35 [00:08<00:00,  4.12it/s]
+{'Epoch': 91, 'name': 'high_freq', 'HIT@5': '0.0440', 'NDCG@5': '0.0283', 'HIT@10': '0.0704', 'NDCG@10': '0.0368', 'HIT@20': '0.1040', 'NDCG@20': '0.0452'}
+{'Epoch': 91, 'name': 'mid_freq', 'HIT@5': '0.0042', 'NDCG@5': '0.0027', 'HIT@10': '0.0078', 'NDCG@10': '0.0038', 'HIT@20': '0.0112', 'NDCG@20': '0.0047'}
+{'Epoch': 91, 'name': 'low_freq', 'HIT@5': '0.0023', 'NDCG@5': '0.0017', 'HIT@10': '0.0041', 'NDCG@10': '0.0023', 'HIT@20': '0.0070', 'NDCG@20': '0.0030'}
+{'Epoch': 91, 'name': 'all', 'HIT@5': '0.0310', 'NDCG@5': '0.0200', 'HIT@10': '0.0499', 'NDCG@10': '0.0260', 'HIT@20': '0.0738', 'NDCG@20': '0.0321'}
+EarlyStopping counter: 26 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 92, 'rec_avg_loss': '0.4786', 'joint_avg_loss': '0.8592', 'cl_avg_loss': '3.8058', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.8058'}
+Recommendation EP_test:92: 100%|| 35/35 [00:08<00:00,  4.11it/s]
+{'Epoch': 92, 'name': 'high_freq', 'HIT@5': '0.0449', 'NDCG@5': '0.0288', 'HIT@10': '0.0701', 'NDCG@10': '0.0369', 'HIT@20': '0.1054', 'NDCG@20': '0.0457'}
+{'Epoch': 92, 'name': 'mid_freq', 'HIT@5': '0.0043', 'NDCG@5': '0.0030', 'HIT@10': '0.0075', 'NDCG@10': '0.0040', 'HIT@20': '0.0118', 'NDCG@20': '0.0051'}
+{'Epoch': 92, 'name': 'low_freq', 'HIT@5': '0.0023', 'NDCG@5': '0.0017', 'HIT@10': '0.0045', 'NDCG@10': '0.0025', 'HIT@20': '0.0081', 'NDCG@20': '0.0034'}
+{'Epoch': 92, 'name': 'all', 'HIT@5': '0.0317', 'NDCG@5': '0.0204', 'HIT@10': '0.0497', 'NDCG@10': '0.0262', 'HIT@20': '0.0750', 'NDCG@20': '0.0325'}
+EarlyStopping counter: 27 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 93, 'rec_avg_loss': '0.4771', 'joint_avg_loss': '0.8575', 'cl_avg_loss': '3.8039', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.8039'}
+Recommendation EP_test:93: 100%|| 35/35 [00:08<00:00,  4.13it/s]
+{'Epoch': 93, 'name': 'high_freq', 'HIT@5': '0.0434', 'NDCG@5': '0.0284', 'HIT@10': '0.0698', 'NDCG@10': '0.0369', 'HIT@20': '0.1053', 'NDCG@20': '0.0458'}
+{'Epoch': 93, 'name': 'mid_freq', 'HIT@5': '0.0047', 'NDCG@5': '0.0031', 'HIT@10': '0.0076', 'NDCG@10': '0.0041', 'HIT@20': '0.0124', 'NDCG@20': '0.0052'}
+{'Epoch': 93, 'name': 'low_freq', 'HIT@5': '0.0025', 'NDCG@5': '0.0019', 'HIT@10': '0.0036', 'NDCG@10': '0.0022', 'HIT@20': '0.0072', 'NDCG@20': '0.0032'}
+{'Epoch': 93, 'name': 'all', 'HIT@5': '0.0308', 'NDCG@5': '0.0202', 'HIT@10': '0.0494', 'NDCG@10': '0.0262', 'HIT@20': '0.0749', 'NDCG@20': '0.0326'}
+EarlyStopping counter: 28 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.81it/s]
+{'epoch': 94, 'rec_avg_loss': '0.4748', 'joint_avg_loss': '0.8541', 'cl_avg_loss': '3.7932', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.7932'}
+Recommendation EP_test:94: 100%|| 35/35 [00:08<00:00,  4.20it/s]
+{'Epoch': 94, 'name': 'high_freq', 'HIT@5': '0.0433', 'NDCG@5': '0.0280', 'HIT@10': '0.0686', 'NDCG@10': '0.0362', 'HIT@20': '0.1029', 'NDCG@20': '0.0449'}
+{'Epoch': 94, 'name': 'mid_freq', 'HIT@5': '0.0057', 'NDCG@5': '0.0035', 'HIT@10': '0.0082', 'NDCG@10': '0.0043', 'HIT@20': '0.0131', 'NDCG@20': '0.0055'}
+{'Epoch': 94, 'name': 'low_freq', 'HIT@5': '0.0029', 'NDCG@5': '0.0019', 'HIT@10': '0.0043', 'NDCG@10': '0.0023', 'HIT@20': '0.0061', 'NDCG@20': '0.0028'}
+{'Epoch': 94, 'name': 'all', 'HIT@5': '0.0309', 'NDCG@5': '0.0200', 'HIT@10': '0.0488', 'NDCG@10': '0.0257', 'HIT@20': '0.0733', 'NDCG@20': '0.0319'}
+EarlyStopping counter: 29 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 95, 'rec_avg_loss': '0.4711', 'joint_avg_loss': '0.8508', 'cl_avg_loss': '3.7972', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.7972'}
+Recommendation EP_test:95: 100%|| 35/35 [00:08<00:00,  4.11it/s]
+{'Epoch': 95, 'name': 'high_freq', 'HIT@5': '0.0438', 'NDCG@5': '0.0280', 'HIT@10': '0.0693', 'NDCG@10': '0.0362', 'HIT@20': '0.1047', 'NDCG@20': '0.0451'}
+{'Epoch': 95, 'name': 'mid_freq', 'HIT@5': '0.0045', 'NDCG@5': '0.0031', 'HIT@10': '0.0085', 'NDCG@10': '0.0044', 'HIT@20': '0.0124', 'NDCG@20': '0.0054'}
+{'Epoch': 95, 'name': 'low_freq', 'HIT@5': '0.0029', 'NDCG@5': '0.0020', 'HIT@10': '0.0045', 'NDCG@10': '0.0025', 'HIT@20': '0.0066', 'NDCG@20': '0.0030'}
+{'Epoch': 95, 'name': 'all', 'HIT@5': '0.0310', 'NDCG@5': '0.0199', 'HIT@10': '0.0494', 'NDCG@10': '0.0258', 'HIT@20': '0.0744', 'NDCG@20': '0.0321'}
+EarlyStopping counter: 30 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 96, 'rec_avg_loss': '0.4714', 'joint_avg_loss': '0.8514', 'cl_avg_loss': '3.8000', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.8000'}
+Recommendation EP_test:96: 100%|| 35/35 [00:08<00:00,  4.19it/s]
+{'Epoch': 96, 'name': 'high_freq', 'HIT@5': '0.0427', 'NDCG@5': '0.0272', 'HIT@10': '0.0688', 'NDCG@10': '0.0355', 'HIT@20': '0.1021', 'NDCG@20': '0.0439'}
+{'Epoch': 96, 'name': 'mid_freq', 'HIT@5': '0.0050', 'NDCG@5': '0.0032', 'HIT@10': '0.0076', 'NDCG@10': '0.0040', 'HIT@20': '0.0126', 'NDCG@20': '0.0053'}
+{'Epoch': 96, 'name': 'low_freq', 'HIT@5': '0.0029', 'NDCG@5': '0.0021', 'HIT@10': '0.0043', 'NDCG@10': '0.0025', 'HIT@20': '0.0066', 'NDCG@20': '0.0031'}
+{'Epoch': 96, 'name': 'all', 'HIT@5': '0.0304', 'NDCG@5': '0.0194', 'HIT@10': '0.0488', 'NDCG@10': '0.0253', 'HIT@20': '0.0727', 'NDCG@20': '0.0313'}
+EarlyStopping counter: 31 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 97, 'rec_avg_loss': '0.4693', 'joint_avg_loss': '0.8472', 'cl_avg_loss': '3.7782', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.7782'}
+Recommendation EP_test:97: 100%|| 35/35 [00:08<00:00,  4.14it/s]
+{'Epoch': 97, 'name': 'high_freq', 'HIT@5': '0.0429', 'NDCG@5': '0.0275', 'HIT@10': '0.0673', 'NDCG@10': '0.0354', 'HIT@20': '0.1045', 'NDCG@20': '0.0447'}
+{'Epoch': 97, 'name': 'mid_freq', 'HIT@5': '0.0042', 'NDCG@5': '0.0026', 'HIT@10': '0.0078', 'NDCG@10': '0.0038', 'HIT@20': '0.0113', 'NDCG@20': '0.0047'}
+{'Epoch': 97, 'name': 'low_freq', 'HIT@5': '0.0029', 'NDCG@5': '0.0020', 'HIT@10': '0.0038', 'NDCG@10': '0.0023', 'HIT@20': '0.0063', 'NDCG@20': '0.0029'}
+{'Epoch': 97, 'name': 'all', 'HIT@5': '0.0304', 'NDCG@5': '0.0195', 'HIT@10': '0.0478', 'NDCG@10': '0.0251', 'HIT@20': '0.0741', 'NDCG@20': '0.0317'}
+EarlyStopping counter: 32 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 98, 'rec_avg_loss': '0.4683', 'joint_avg_loss': '0.8467', 'cl_avg_loss': '3.7842', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.7842'}
+Recommendation EP_test:98: 100%|| 35/35 [00:08<00:00,  4.24it/s]
+{'Epoch': 98, 'name': 'high_freq', 'HIT@5': '0.0423', 'NDCG@5': '0.0273', 'HIT@10': '0.0692', 'NDCG@10': '0.0360', 'HIT@20': '0.1025', 'NDCG@20': '0.0443'}
+{'Epoch': 98, 'name': 'mid_freq', 'HIT@5': '0.0043', 'NDCG@5': '0.0028', 'HIT@10': '0.0076', 'NDCG@10': '0.0039', 'HIT@20': '0.0122', 'NDCG@20': '0.0050'}
+{'Epoch': 98, 'name': 'low_freq', 'HIT@5': '0.0029', 'NDCG@5': '0.0020', 'HIT@10': '0.0041', 'NDCG@10': '0.0024', 'HIT@20': '0.0068', 'NDCG@20': '0.0030'}
+{'Epoch': 98, 'name': 'all', 'HIT@5': '0.0300', 'NDCG@5': '0.0194', 'HIT@10': '0.0490', 'NDCG@10': '0.0255', 'HIT@20': '0.0730', 'NDCG@20': '0.0315'}
+EarlyStopping counter: 33 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 99, 'rec_avg_loss': '0.4690', 'joint_avg_loss': '0.8475', 'cl_avg_loss': '3.7848', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.7848'}
+Recommendation EP_test:99: 100%|| 35/35 [00:08<00:00,  4.11it/s]
+{'Epoch': 99, 'name': 'high_freq', 'HIT@5': '0.0438', 'NDCG@5': '0.0283', 'HIT@10': '0.0681', 'NDCG@10': '0.0361', 'HIT@20': '0.1041', 'NDCG@20': '0.0452'}
+{'Epoch': 99, 'name': 'mid_freq', 'HIT@5': '0.0046', 'NDCG@5': '0.0031', 'HIT@10': '0.0078', 'NDCG@10': '0.0042', 'HIT@20': '0.0118', 'NDCG@20': '0.0052'}
+{'Epoch': 99, 'name': 'low_freq', 'HIT@5': '0.0029', 'NDCG@5': '0.0020', 'HIT@10': '0.0045', 'NDCG@10': '0.0025', 'HIT@20': '0.0070', 'NDCG@20': '0.0031'}
+{'Epoch': 99, 'name': 'all', 'HIT@5': '0.0310', 'NDCG@5': '0.0201', 'HIT@10': '0.0484', 'NDCG@10': '0.0257', 'HIT@20': '0.0740', 'NDCG@20': '0.0321'}
+EarlyStopping counter: 34 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 100, 'rec_avg_loss': '0.4665', 'joint_avg_loss': '0.8447', 'cl_avg_loss': '3.7811', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.7811'}
+Recommendation EP_test:100: 100%|| 35/35 [00:08<00:00,  4.19it/s]
+{'Epoch': 100, 'name': 'high_freq', 'HIT@5': '0.0437', 'NDCG@5': '0.0280', 'HIT@10': '0.0689', 'NDCG@10': '0.0361', 'HIT@20': '0.1029', 'NDCG@20': '0.0447'}
+{'Epoch': 100, 'name': 'mid_freq', 'HIT@5': '0.0053', 'NDCG@5': '0.0034', 'HIT@10': '0.0078', 'NDCG@10': '0.0042', 'HIT@20': '0.0132', 'NDCG@20': '0.0055'}
+{'Epoch': 100, 'name': 'low_freq', 'HIT@5': '0.0029', 'NDCG@5': '0.0021', 'HIT@10': '0.0050', 'NDCG@10': '0.0027', 'HIT@20': '0.0075', 'NDCG@20': '0.0034'}
+{'Epoch': 100, 'name': 'all', 'HIT@5': '0.0312', 'NDCG@5': '0.0200', 'HIT@10': '0.0490', 'NDCG@10': '0.0257', 'HIT@20': '0.0735', 'NDCG@20': '0.0319'}
+EarlyStopping counter: 35 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.80it/s]
+{'epoch': 101, 'rec_avg_loss': '0.4675', 'joint_avg_loss': '0.8446', 'cl_avg_loss': '3.7708', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.7708'}
+Recommendation EP_test:101: 100%|| 35/35 [00:08<00:00,  4.18it/s]
+{'Epoch': 101, 'name': 'high_freq', 'HIT@5': '0.0446', 'NDCG@5': '0.0287', 'HIT@10': '0.0698', 'NDCG@10': '0.0368', 'HIT@20': '0.1023', 'NDCG@20': '0.0449'}
+{'Epoch': 101, 'name': 'mid_freq', 'HIT@5': '0.0060', 'NDCG@5': '0.0035', 'HIT@10': '0.0082', 'NDCG@10': '0.0042', 'HIT@20': '0.0132', 'NDCG@20': '0.0055'}
+{'Epoch': 101, 'name': 'low_freq', 'HIT@5': '0.0029', 'NDCG@5': '0.0020', 'HIT@10': '0.0048', 'NDCG@10': '0.0026', 'HIT@20': '0.0077', 'NDCG@20': '0.0034'}
+{'Epoch': 101, 'name': 'all', 'HIT@5': '0.0319', 'NDCG@5': '0.0205', 'HIT@10': '0.0497', 'NDCG@10': '0.0262', 'HIT@20': '0.0732', 'NDCG@20': '0.0321'}
+EarlyStopping counter: 36 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:48<00:00,  3.80it/s]
+{'epoch': 102, 'rec_avg_loss': '0.4653', 'joint_avg_loss': '0.8421', 'cl_avg_loss': '3.7690', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.7690'}
+Recommendation EP_test:102: 100%|| 35/35 [00:08<00:00,  4.20it/s]
+{'Epoch': 102, 'name': 'high_freq', 'HIT@5': '0.0448', 'NDCG@5': '0.0291', 'HIT@10': '0.0696', 'NDCG@10': '0.0371', 'HIT@20': '0.1027', 'NDCG@20': '0.0454'}
+{'Epoch': 102, 'name': 'mid_freq', 'HIT@5': '0.0049', 'NDCG@5': '0.0032', 'HIT@10': '0.0078', 'NDCG@10': '0.0041', 'HIT@20': '0.0125', 'NDCG@20': '0.0053'}
+{'Epoch': 102, 'name': 'low_freq', 'HIT@5': '0.0029', 'NDCG@5': '0.0020', 'HIT@10': '0.0050', 'NDCG@10': '0.0027', 'HIT@20': '0.0081', 'NDCG@20': '0.0035'}
+{'Epoch': 102, 'name': 'all', 'HIT@5': '0.0318', 'NDCG@5': '0.0207', 'HIT@10': '0.0495', 'NDCG@10': '0.0264', 'HIT@20': '0.0733', 'NDCG@20': '0.0324'}
+EarlyStopping counter: 37 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 103, 'rec_avg_loss': '0.4628', 'joint_avg_loss': '0.8394', 'cl_avg_loss': '3.7663', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.7663'}
+Recommendation EP_test:103: 100%|| 35/35 [00:08<00:00,  4.19it/s]
+{'Epoch': 103, 'name': 'high_freq', 'HIT@5': '0.0413', 'NDCG@5': '0.0273', 'HIT@10': '0.0681', 'NDCG@10': '0.0359', 'HIT@20': '0.1035', 'NDCG@20': '0.0448'}
+{'Epoch': 103, 'name': 'mid_freq', 'HIT@5': '0.0052', 'NDCG@5': '0.0036', 'HIT@10': '0.0080', 'NDCG@10': '0.0045', 'HIT@20': '0.0135', 'NDCG@20': '0.0059'}
+{'Epoch': 103, 'name': 'low_freq', 'HIT@5': '0.0032', 'NDCG@5': '0.0023', 'HIT@10': '0.0057', 'NDCG@10': '0.0031', 'HIT@20': '0.0077', 'NDCG@20': '0.0036'}
+{'Epoch': 103, 'name': 'all', 'HIT@5': '0.0295', 'NDCG@5': '0.0196', 'HIT@10': '0.0486', 'NDCG@10': '0.0257', 'HIT@20': '0.0740', 'NDCG@20': '0.0320'}
+EarlyStopping counter: 38 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 104, 'rec_avg_loss': '0.4621', 'joint_avg_loss': '0.8373', 'cl_avg_loss': '3.7524', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.7524'}
+Recommendation EP_test:104: 100%|| 35/35 [00:08<00:00,  4.24it/s]
+{'Epoch': 104, 'name': 'high_freq', 'HIT@5': '0.0435', 'NDCG@5': '0.0283', 'HIT@10': '0.0685', 'NDCG@10': '0.0363', 'HIT@20': '0.1036', 'NDCG@20': '0.0452'}
+{'Epoch': 104, 'name': 'mid_freq', 'HIT@5': '0.0053', 'NDCG@5': '0.0034', 'HIT@10': '0.0082', 'NDCG@10': '0.0043', 'HIT@20': '0.0126', 'NDCG@20': '0.0054'}
+{'Epoch': 104, 'name': 'low_freq', 'HIT@5': '0.0023', 'NDCG@5': '0.0017', 'HIT@10': '0.0045', 'NDCG@10': '0.0025', 'HIT@20': '0.0075', 'NDCG@20': '0.0032'}
+{'Epoch': 104, 'name': 'all', 'HIT@5': '0.0309', 'NDCG@5': '0.0201', 'HIT@10': '0.0488', 'NDCG@10': '0.0258', 'HIT@20': '0.0739', 'NDCG@20': '0.0322'}
+EarlyStopping counter: 39 out of 40
+rec dataset length: 186
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 186/186 [00:49<00:00,  3.79it/s]
+{'epoch': 105, 'rec_avg_loss': '0.4621', 'joint_avg_loss': '0.8374', 'cl_avg_loss': '3.7537', 'itemcl_loss': '0.0000', 'cl_pair_0_loss': '3.7537'}
+Recommendation EP_test:105: 100%|| 35/35 [00:08<00:00,  4.17it/s]
+{'Epoch': 105, 'name': 'high_freq', 'HIT@5': '0.0428', 'NDCG@5': '0.0281', 'HIT@10': '0.0664', 'NDCG@10': '0.0356', 'HIT@20': '0.1029', 'NDCG@20': '0.0448'}
+{'Epoch': 105, 'name': 'mid_freq', 'HIT@5': '0.0049', 'NDCG@5': '0.0029', 'HIT@10': '0.0080', 'NDCG@10': '0.0039', 'HIT@20': '0.0119', 'NDCG@20': '0.0049'}
+{'Epoch': 105, 'name': 'low_freq', 'HIT@5': '0.0029', 'NDCG@5': '0.0019', 'HIT@10': '0.0050', 'NDCG@10': '0.0025', 'HIT@20': '0.0072', 'NDCG@20': '0.0031'}
+{'Epoch': 105, 'name': 'all', 'HIT@5': '0.0305', 'NDCG@5': '0.0199', 'HIT@10': '0.0473', 'NDCG@10': '0.0253', 'HIT@20': '0.0732', 'NDCG@20': '0.0318'}
+EarlyStopping counter: 40 out of 40
+Early stopping
+---------------Change to test_rating_matrix!-------------------
+Recommendation EP_test:106: 100%|| 35/35 [00:09<00:00,  3.85it/s]
+{'Epoch': 106, 'name': 'high_freq', 'HIT@5': '0.0373', 'NDCG@5': '0.0241', 'HIT@10': '0.0585', 'NDCG@10': '0.0309', 'HIT@20': '0.0905', 'NDCG@20': '0.0389'}
+{'Epoch': 106, 'name': 'mid_freq', 'HIT@5': '0.0025', 'NDCG@5': '0.0018', 'HIT@10': '0.0054', 'NDCG@10': '0.0027', 'HIT@20': '0.0088', 'NDCG@20': '0.0036'}
+{'Epoch': 106, 'name': 'low_freq', 'HIT@5': '0.0021', 'NDCG@5': '0.0012', 'HIT@10': '0.0040', 'NDCG@10': '0.0019', 'HIT@20': '0.0050', 'NDCG@20': '0.0021'}
+{'Epoch': 106, 'name': 'all', 'HIT@5': '0.0244', 'NDCG@5': '0.0158', 'HIT@10': '0.0387', 'NDCG@10': '0.0204', 'HIT@20': '0.0598', 'NDCG@20': '0.0256'}
+CoSeRec-Sports_and_Outdoors-single_cl_mask_0.5_1024
+{'Epoch': 106, 'name': 'all', 'HIT@5': '0.0244', 'NDCG@5': '0.0158', 'HIT@10': '0.0387', 'NDCG@10': '0.0204', 'HIT@20': '0.0598', 'NDCG@20': '0.0256'}

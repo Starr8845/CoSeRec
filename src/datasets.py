@@ -306,11 +306,56 @@ class SASRecDataset(Dataset):
 
 
 class ExtendDataset(Dataset):
-    def __init__(self, args, extended_user_seq, test_neg_items=None):
+    # def __init__(self, args, extended_user_seq, test_neg_items=None):
+    #     self.args = args
+    #     self.extended_user_seq = extended_user_seq
+    #     self.test_neg_items = test_neg_items
+    #     self.max_len = args.max_seq_length
+    
+    def __init__(self, args, extended_user_seq, test_neg_items=None, data_type='train', 
+                similarity_model_type='offline'):
         self.args = args
         self.extended_user_seq = extended_user_seq
         self.test_neg_items = test_neg_items
+        self.data_type = data_type
         self.max_len = args.max_seq_length
+        # currently apply one transform, will extend to multiples
+        # it takes one sequence of items as input, and apply augmentation operation to get another sequence
+        if similarity_model_type=='offline':
+            self.similarity_model = args.offline_similarity_model
+        elif similarity_model_type=='online':
+            self.similarity_model = args.online_similarity_model
+        elif similarity_model_type=='hybrid':
+            self.similarity_model = [args.offline_similarity_model, args.online_similarity_model]
+        print("Similarity Model Type:", similarity_model_type)
+        self.augmentations = {'crop': Crop(tao=args.tao),
+                              'mask': Mask(args=self.args, gamma=args.gamma, strategy=args.mask_strategy),
+                              'reorder': Reorder(beta=args.beta),
+                              'substitute': Substitute(self.similarity_model,
+                                                substitute_rate=args.substitute_rate),
+                              'insert': Insert(self.similarity_model, 
+                                               insert_rate=args.insert_rate,
+                                               max_insert_num_per_pos=args.max_insert_num_per_pos),
+                              'random': Random(args=self.args, tao=args.tao, gamma=args.gamma, 
+                                                beta=args.beta, item_similarity_model=self.similarity_model,
+                                                insert_rate=args.insert_rate, 
+                                                max_insert_num_per_pos=args.max_insert_num_per_pos,
+                                                substitute_rate=args.substitute_rate,
+                                                augment_threshold=self.args.augment_threshold,
+                                                augment_type_for_short=self.args.augment_type_for_short),
+                            #   'combinatorial_enumerate': CombinatorialEnumerate(tao=args.tao, gamma=args.gamma, 
+                            #                     beta=args.beta, item_similarity_model=self.similarity_model,
+                            #                     insert_rate=args.insert_rate, 
+                            #                     max_insert_num_per_pos=args.max_insert_num_per_pos,
+                            #                     substitute_rate=args.substitute_rate, n_views=args.n_views)
+                            }
+        if self.args.base_augment_type not in self.augmentations:
+            raise ValueError(f"augmentation type: '{self.args.base_augment_type}' is invalided")
+        print(f"Creating Contrastive Learning Dataset using '{self.args.base_augment_type}' data augmentation")
+        self.base_transform = self.augmentations[self.args.base_augment_type]
+        # number of augmentations for each sequences, current support two
+        self.n_views = self.args.n_views
+
     
     def _data_sample_rec_task(self, index, items, input_ids, target_pos):
         # make a deep copy to avoid original sequence be modified
@@ -324,28 +369,11 @@ class ExtendDataset(Dataset):
         input_ids = input_ids[-self.max_len:]
         
         assert len(input_ids) == self.max_len
-        freq = self._add_frequency(input_ids)
-        low_mid_index_ = np.nonzero((freq==1) | (freq==0) )[0][:10]
-        if len(low_mid_index_)>0:
-            # 随机采样一个
-            low_mid_index = np.array([random.choice(low_mid_index_)])
-            # low_mid_index = np.array([low_mid_index_[0]])
-            low_mid_mask = 1
-        else:
-            low_mid_index = np.array([0])
-            low_mid_mask = 0
-
-        sampled_neighbors, neighbors_mask = self.sample_neighbors(np.array(input_ids)[low_mid_index], max_num=1) # 对中低频物品进行邻居采样
-        
         cur_rec_tensors = (
             torch.tensor(index, dtype=torch.long), # 对valid和test有用
             torch.tensor(input_ids, dtype=torch.long),
             torch.tensor([target_pos], dtype=torch.long),
             torch.tensor([target_neg], dtype=torch.long),
-            torch.tensor(low_mid_index, dtype=torch.long),
-            sampled_neighbors,
-            torch.tensor(low_mid_mask, dtype=torch.bool),
-            neighbors_mask
         )
 
         return cur_rec_tensors
@@ -386,11 +414,40 @@ class ExtendDataset(Dataset):
         input_ids = items[:-1]
         target_pos = items[-1]
 
-        return self._data_sample_rec_task(index, items, input_ids, target_pos)
+        cur_rec_tensors = self._data_sample_rec_task(index, items, input_ids, target_pos)
+
+        if self.data_type == "train":
+            cf_tensors_list = []
+            total_augmentaion_pairs = nCr(self.n_views, 2)
+            for i in range(total_augmentaion_pairs):
+                cf_tensors_list.append(self._one_pair_data_augmentation(input_ids))
+            return (cur_rec_tensors, cf_tensors_list)
+        elif self.data_type == 'valid' or self.data_type=="test":
+            return cur_rec_tensors
 
     def __len__(self):
         return len(self.extended_user_seq)
 
+
+    def _one_pair_data_augmentation(self, input_ids):
+        '''
+        provides two positive samples given one sequence
+        '''
+        augmented_seqs = []
+        for i in range(2):
+            augmented_input_ids = self.base_transform(input_ids)
+            pad_len = self.max_len - len(augmented_input_ids)
+            augmented_input_ids = [0] * pad_len + augmented_input_ids
+
+            augmented_input_ids = augmented_input_ids[-self.max_len:]
+
+            assert len(augmented_input_ids) == self.max_len
+
+            cur_tensors = (
+                torch.tensor(augmented_input_ids, dtype=torch.long)
+            )
+            augmented_seqs.append(cur_tensors)
+        return augmented_seqs
 
 
 if __name__ == '__main__':

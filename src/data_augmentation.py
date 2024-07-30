@@ -1,6 +1,7 @@
 import random
 import copy
 import itertools
+import numpy as np
 
 class CombinatorialEnumerate(object):
     """Given M type of augmentations, and a original sequence, successively call \
@@ -42,15 +43,16 @@ class CombinatorialEnumerate(object):
 
 class Random(object):
     """Randomly pick one data augmentation type every time call"""
-    def __init__(self, tao=0.2, gamma=0.7, beta=0.2, \
+    def __init__(self, args, tao=0.2, gamma=0.7, beta=0.2, \
                 item_similarity_model=None, insert_rate=0.3, \
                 max_insert_num_per_pos=3, substitute_rate=0.3,\
                 augment_threshold=-1,
                 augment_type_for_short='SIM'):
+        self.args = args
         self.augment_threshold = augment_threshold
         self.augment_type_for_short = augment_type_for_short
         if self.augment_threshold == -1:
-            self.data_augmentation_methods = [Crop(tao=tao), Mask(gamma=gamma), Reorder(beta=beta), 
+            self.data_augmentation_methods = [Crop(tao=tao), Mask(args=self.args, gamma=gamma), Reorder(beta=beta), 
                                 Insert(item_similarity_model, insert_rate=insert_rate, 
                                     max_insert_num_per_pos=max_insert_num_per_pos),
                                 Substitute(item_similarity_model, substitute_rate=substitute_rate)]
@@ -67,7 +69,7 @@ class Random(object):
                                         max_insert_num_per_pos=max_insert_num_per_pos, 
                                         augment_threshold=self.augment_threshold),
                                     Substitute(item_similarity_model, substitute_rate=substitute_rate),
-                                    Mask(gamma=gamma)]
+                                    Mask(args=self.args, gamma=gamma)]
 
             elif self.augment_type_for_short == 'SIR':
                 self.short_seq_data_aug_methods = [Insert(item_similarity_model, insert_rate=insert_rate, 
@@ -86,13 +88,13 @@ class Random(object):
                                         max_insert_num_per_pos=max_insert_num_per_pos, 
                                         augment_threshold=self.augment_threshold),
                                     Substitute(item_similarity_model, substitute_rate=substitute_rate),
-                                    Mask(gamma=gamma), Reorder(beta=gamma)]
+                                    Mask(args=self.args, gamma=gamma), Reorder(beta=gamma)]
             elif self.augment_type_for_short == 'SIMC':
                 self.short_seq_data_aug_methods = [Insert(item_similarity_model, insert_rate=insert_rate, 
                                         max_insert_num_per_pos=max_insert_num_per_pos, 
                                         augment_threshold=self.augment_threshold),
                                     Substitute(item_similarity_model, substitute_rate=substitute_rate),
-                                    Mask(gamma=gamma), Crop(tao=tao)]
+                                    Mask(args=self.args, gamma=gamma), Crop(tao=tao)]
             elif self.augment_type_for_short == 'SIRC':
                 self.short_seq_data_aug_methods = [Insert(item_similarity_model, insert_rate=insert_rate, 
                                         max_insert_num_per_pos=max_insert_num_per_pos, 
@@ -105,11 +107,11 @@ class Random(object):
                                         max_insert_num_per_pos=max_insert_num_per_pos, 
                                         augment_threshold=self.augment_threshold),
                                     Substitute(item_similarity_model, substitute_rate=substitute_rate),
-                                   Crop(tao=tao), Mask(gamma=gamma), Reorder(beta=gamma)]                
+                                   Crop(tao=tao), Mask(args=self.args, gamma=gamma), Reorder(beta=gamma)]                
             self.long_seq_data_aug_methods = [Insert(item_similarity_model, insert_rate=insert_rate, 
                                     max_insert_num_per_pos=max_insert_num_per_pos, 
                                     augment_threshold=self.augment_threshold),
-                                Crop(tao=tao), Mask(gamma=gamma), Reorder(beta=gamma),
+                                Crop(tao=tao), Mask(args=self.args, gamma=gamma), Reorder(beta=gamma),
                                 Substitute(item_similarity_model, substitute_rate=substitute_rate)]
             print("Augmentation methods for Long sequences:", len(self.long_seq_data_aug_methods))
             print("Augmentation methods for short sequences:", len(self.short_seq_data_aug_methods))
@@ -236,17 +238,43 @@ class Crop(object):
 
 class Mask(object):
     """Randomly mask k items given a sequence"""
-    def __init__(self, gamma=0.7):
+    def __init__(self, args, gamma=0.7, strategy='random'):
+        # strategy：random, mask_high, mask_mid_low, mask_mid_low_all
+        # 单独使用mask策略，选择mask哪些样本，从而得到一些insight
         self.gamma = gamma
+        self.strategy = strategy
+        self.args = args
 
     def __call__(self, sequence):
         # make a deep copy to avoid original sequence be modified
         copied_sequence = copy.deepcopy(sequence)
         mask_nums = int(self.gamma*len(copied_sequence))
-        mask = [0 for i in range(mask_nums)]
-        mask_idx = random.sample([i for i in range(len(copied_sequence))], k = mask_nums)
-        for idx, mask_value in zip(mask_idx, mask):
-            copied_sequence[idx] = mask_value
+        mask_nums = max(mask_nums, 1)
+        mask_nums = min(len(copied_sequence)-1, mask_nums)
+        if self.strategy == "random":
+            sampled_from = [i for i in range(len(copied_sequence))]
+            mask_idx = random.sample(sampled_from, k = min(mask_nums, len(sampled_from)))
+        elif self.strategy == "mask_high":
+            freq = self.args.item_freq_class[np.array(copied_sequence)]
+            sampled_from = np.nonzero(freq==2)[0].tolist()
+            mask_idx = random.sample(sampled_from, k = min(mask_nums, len(sampled_from)))
+        elif self.strategy == "mask_mid_low":
+            freq = self.args.item_freq_class[np.array(copied_sequence)]
+            sampled_from = np.nonzero(freq==0)[0].tolist() + np.nonzero(freq==1)[0].tolist()
+            mask_idx = random.sample(sampled_from, k = min(mask_nums, len(sampled_from)))
+        elif self.strategy == "mask_mid_low_all":
+            # 首先中低频物品都要mask掉，然后再随机mask一些高频物品
+            freq = self.args.item_freq_class[np.array(copied_sequence)]
+            mask_idx = np.nonzero(freq==0)[0].tolist() + np.nonzero(freq==1)[0].tolist()
+            sampled_from = np.nonzero(freq==2)[0].tolist()
+            if len(sampled_from)!=0:
+                mask_nums = int(self.gamma*(len(copied_sequence)-len(mask_idx)))
+                if mask_nums==0:
+                    mask_nums=1
+                mask_idx2 = random.sample(sampled_from, k = mask_nums)
+                mask_idx = mask_idx + mask_idx2
+        for idx in mask_idx:
+            copied_sequence[idx] = 0
         return copied_sequence
 
 class Reorder(object):

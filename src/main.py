@@ -105,6 +105,9 @@ def main():
     parser.add_argument("--multi_neg", action="store_true")
     parser.add_argument("--use_freq", action="store_true")
 
+    parser.add_argument('--mask_strategy', default='random', type=str, \
+                        help="random, mask_high, mask_mid_low")
+
 
     args = parser.parse_args()
 
@@ -175,17 +178,17 @@ def main():
     # train_dataset = RecWithContrastiveLearningDataset(args, 
     #                                 user_seq[:int(len(user_seq)*args.training_data_ratio)], \
     #                                 data_type='train')
-    train_dataset = ExtendDataset(args, extended_user_seq_train)
+    train_dataset = ExtendDataset(args, extended_user_seq_train, data_type='train')
     train_sampler = RandomSampler(train_dataset)
     train_dataloader = DataLoader(train_dataset, sampler=train_sampler, batch_size=args.batch_size)
 
     # eval_dataset = RecWithContrastiveLearningDataset(args, user_seq, data_type='valid')
-    eval_dataset = ExtendDataset(args, extended_user_seq_valid)
+    eval_dataset = ExtendDataset(args, extended_user_seq_valid, data_type='valid')
     eval_sampler = SequentialSampler(eval_dataset)
     eval_dataloader = DataLoader(eval_dataset, sampler=eval_sampler, batch_size=args.batch_size)
 
     # test_dataset = RecWithContrastiveLearningDataset(args, user_seq, data_type='test')
-    test_dataset = ExtendDataset(args, user_seq)
+    test_dataset = ExtendDataset(args, user_seq, data_type="test")
     test_sampler = SequentialSampler(test_dataset)
     test_dataloader = DataLoader(test_dataset, sampler=test_sampler, batch_size=args.batch_size)
 

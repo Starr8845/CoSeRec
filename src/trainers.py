@@ -66,9 +66,10 @@ class Trainer:
         
     def train(self, epoch):
         # start to use online item similarity
-        if epoch > self.args.augmentation_warm_up_epoches:
-            print("refresh dataset with updated item embedding")
-            self.train_dataloader = self.__refresh_training_dataset(self.model.item_embeddings)
+        # zhangzexi: 暂时忽略 online item similarity这一个分支
+        # if epoch > self.args.augmentation_warm_up_epoches:
+        #     print("refresh dataset with updated item embedding")
+        #     self.train_dataloader = self.__refresh_training_dataset(self.model.item_embeddings)
         self.iteration(epoch, self.train_dataloader)
 
     def valid(self, epoch, full_sort=False):
@@ -134,12 +135,11 @@ class Trainer:
         
         pos_logits = torch.sum(pos * seq_out, -1) # [batch*seq_len]
         neg_logits = torch.sum(neg * seq_out, -1)
+        logits = - torch.log(torch.sigmoid(pos_logits) + 1e-24) - torch.log(1 - torch.sigmoid(neg_logits) + 1e-24)
         loss = torch.mean(
-            - torch.log(torch.sigmoid(pos_logits) + 1e-24) -
-            torch.log(1 - torch.sigmoid(neg_logits) + 1e-24)
+            logits
         )
-
-        return loss
+        return logits.detach(), loss
 
     def cross_entropy_2(self, seq_out, pos_ids, neg_ids):
         pos_emb = self.model.get_item_embeddings(pos_ids)
@@ -232,8 +232,8 @@ class CoSeRecTrainer(Trainer):
             print(f"rec dataset length: {len(dataloader)}")
             rec_cf_data_iter = tqdm(enumerate(dataloader), total=len(dataloader))
 
-            # for i, (rec_batch, cl_batches) in rec_cf_data_iter:
-            for i, rec_batch in rec_cf_data_iter:
+            for i, (rec_batch, cl_batches) in rec_cf_data_iter:
+            # for i, rec_batch in rec_cf_data_iter:
                 '''
                 rec_batch shape: key_name x batch_size x feature_dim
                 cl_batches shape: 
@@ -241,7 +241,7 @@ class CoSeRecTrainer(Trainer):
                 '''
                 # 0. batch_data will be sent into the device(GPU or CPU)
                 rec_batch = tuple(t.to(self.device) for t in rec_batch)
-                _, input_ids, target_pos, target_neg, low_mid_index, sampled_neighbors, low_mid_mask, neighbors_mask = rec_batch
+                _, input_ids, target_pos, target_neg = rec_batch
 
                 # ---------- recommendation task ---------------#
                 sequence_output_all_pos = self.model.transformer_encoder(input_ids, all_pos=True)
@@ -249,33 +249,21 @@ class CoSeRecTrainer(Trainer):
                 if self.args.multi_neg:
                     rec_loss = self.cross_entropy_2(sequence_output, target_pos, target_neg)
                 else:
-                    rec_loss = self.cross_entropy(sequence_output, target_pos, target_neg)
+                    rec_logits, rec_loss = self.cross_entropy(sequence_output, target_pos, target_neg)
                 # zzx: sequence_output: [bs, 64]
                 # target_pos, target_neg: [bs, 1]
 
+                # 分开看一下 在不同类别的target item的样本上，分别的loss情况
+
+                if i == 0:
+                    pred_logits_list = rec_logits.cpu().data.numpy()
+                    answer_list = target_pos.cpu().data.numpy()
+                else:
+                    pred_logits_list = np.append(pred_logits_list, rec_logits.cpu().data.numpy(), axis=0)
+                    answer_list = np.append(answer_list, target_pos.cpu().data.numpy(), axis=0)
+
+                
                 joint_loss = 0
-
-                # ---------- consistency learning task -------------#
-                # 这里做一下consistency learning 
-                # 重新写，先实现一个只有1个low/mid item的情况
-                # sampled_neighbors: [256, 1, 10]
-                neighbors_emb = self.model.get_item_embeddings(sampled_neighbors) #[256, 1, 10, 64]
-                # 简单起见，直接取平均
-                masked_nei_emb = torch.mean(neighbors_emb, dim=2).reshape(-1, self.args.hidden_size)
-                # mask_expanded = neighbors_mask.unsqueeze(3).float()   #[256, 1, 10, 1]
-                # masked_nei_emb = neighbors_emb * mask_expanded  
-
-                # # 求和后除以每个样本(mask=1的个数)
-                # summed = masked_nei_emb.sum(2)
-                # counts = neighbors_mask.sum(2, keepdim=True)
-                # masked_nei_emb = summed / counts # [256, 1, 64]
-                # masked_nei_emb = masked_nei_emb.reshape(-1, self.args.hidden_size) #[256, 64]
-                
-                left = sequence_output_all_pos[low_mid_mask==1, low_mid_index[low_mid_mask==1].view(-1), :]
-                
-                right = masked_nei_emb[low_mid_mask==1]
-                consistency_loss = self.cf_criterion(left, right)
-                joint_loss += 0.1*consistency_loss
 
                 # ---------- contrastive learning task -------------#
                 cl_losses = []
@@ -340,6 +328,17 @@ class CoSeRecTrainer(Trainer):
             self.writer.add_scalar(tag="loss/train loss", scalar_value=rec_avg_loss / len(rec_cf_data_iter), global_step = epoch)
             self.writer.add_scalar(tag="loss/itemcl loss", scalar_value=itemcl_sum_avg_loss / len(rec_cf_data_iter), global_step = epoch)
 
+            answer_class_list = self.args.item_freq_class[answer_list.squeeze()]
+            head_tail = {
+                "high_freq": np.argwhere(answer_class_list==2).squeeze(),
+                "mid_freq": np.argwhere(answer_class_list==1).squeeze(),
+                "low_freq": np.argwhere(answer_class_list==0).squeeze(),
+            }
+            for key in head_tail:
+                indexes = head_tail[key]
+                pred_logits_list_part = pred_logits_list[indexes]
+                self.writer.add_scalar(tag=f"train_loss/{key}", scalar_value=np.mean(pred_logits_list_part), global_step = epoch)
+                # 为了方便，暂时这里暂时写为横轴为epoch，后面需要看一下横轴为iteration的
         else:
             rec_data_iter = tqdm(enumerate(dataloader),
                                   desc="Recommendation EP_%s:%d" % (str_code, epoch),
@@ -355,7 +354,7 @@ class CoSeRecTrainer(Trainer):
                     # 0. batch_data will be sent into the device(GPU or cpu)
                     batch = tuple(t.to(self.device) for t in batch)
                     # user_ids, input_ids, target_pos, target_neg = batch
-                    user_ids, input_ids, target_pos, target_neg, _, _, _, _ = batch
+                    user_ids, input_ids, target_pos, target_neg = batch
                     answers = target_pos
                     recommend_output = self.model.transformer_encoder(input_ids) # zzx: [bs, 64]
 

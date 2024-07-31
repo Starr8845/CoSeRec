@@ -108,6 +108,14 @@ def main():
     parser.add_argument('--mask_strategy', default='random', type=str, \
                         help="random, mask_high, mask_mid_low")
 
+    parser.add_argument("--contrast_anchor", action="store_true")
+
+    parser.add_argument('--aug_by_target', default='all', type=str, \
+                        help="all, high, mid_low, mid, low")
+
+    parser.add_argument("--cl_only_aug", action="store_true")
+
+
 
     args = parser.parse_args()
 

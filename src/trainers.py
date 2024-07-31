@@ -182,6 +182,7 @@ class CoSeRecTrainer(Trainer):
             args
         )
         self.writer = writer
+        self.item_freq_class = torch.tensor(self.args.item_freq_class).cuda() if self.args.item_freq_class is not None else None
 
     def _one_pair_contrastive_learning(self, inputs):
         '''
@@ -189,7 +190,7 @@ class CoSeRecTrainer(Trainer):
         inputs: [batch1_augmented_data, batch2_augmentated_data]
         '''
         cl_batch = torch.cat(inputs, dim=0)
-        cl_batch = cl_batch.to(self.device)
+        # cl_batch = cl_batch.to(self.device)
         cl_sequence_output = self.model.transformer_encoder(cl_batch)
         # cf_sequence_output = cf_sequence_output[:, -1, :]
         cl_sequence_flatten = cl_sequence_output.view(cl_batch.shape[0], -1)
@@ -269,7 +270,35 @@ class CoSeRecTrainer(Trainer):
                 cl_losses = []
                 if self.args.cl:
                     for cl_batch in cl_batches:
-                        cl_loss = self._one_pair_contrastive_learning(cl_batch)
+                        cl_batch = [each.to(self.device) for each in cl_batch]
+                        if self.args.aug_by_target=="all":
+                            pass
+                        else:
+                            answer_class_list_ = self.item_freq_class[target_pos]
+                            head_tail = {
+                                "high_freq": torch.argwhere(answer_class_list_==2)[:,0].squeeze(),
+                                "mid_freq": torch.argwhere(answer_class_list_==1)[:,0].squeeze(),
+                                "low_freq": torch.argwhere(answer_class_list_==0)[:,0].squeeze(),
+                            }
+                            if self.args.aug_by_target=="high":
+                                cl_batch = [each[head_tail["high_freq"]] for each in cl_batch]
+                            elif self.args.aug_by_target=="mid":
+                                cl_batch = [each[head_tail["mid_freq"]] for each in cl_batch]
+                            elif self.args.aug_by_target=="low":
+                                cl_batch = [each[head_tail["low_freq"]] for each in cl_batch]
+                            elif self.args.aug_by_target=="mid_low":
+                                cl_batch = [each[torch.concatenate([head_tail["mid_freq"], head_tail["low_freq"]])] for each in cl_batch]
+
+                        if self.args.contrast_anchor:
+                            cl_loss = self._one_pair_contrastive_learning([input_ids, cl_batch[0]])
+                        elif self.args.cl_only_aug:
+                            sequence_output_all_pos = self.model.transformer_encoder(cl_batch[0], all_pos=False)
+                            _, cl_loss1 = self.cross_entropy(sequence_output, target_pos, target_neg)
+                            sequence_output_all_pos = self.model.transformer_encoder(cl_batch[1], all_pos=False)
+                            _, cl_loss2 = self.cross_entropy(sequence_output, target_pos, target_neg)
+                            cl_loss = cl_loss1 + cl_loss2
+                        else:
+                            cl_loss = self._one_pair_contrastive_learning(cl_batch)
                         cl_losses.append(cl_loss)
                 
                 # 在item表征 上加一个item 表征的约束 应用对比学习损失

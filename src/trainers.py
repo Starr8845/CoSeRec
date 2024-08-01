@@ -173,16 +173,18 @@ class CoSeRecTrainer(Trainer):
                  eval_dataloader,
                  test_dataloader, 
                  args,
-                 writer):
+                 writer,
+                 aug=None):
         super(CoSeRecTrainer, self).__init__(
             model,
             train_dataloader,
             eval_dataloader,
             test_dataloader, 
-            args
+            args,
         )
         self.writer = writer
         self.item_freq_class = torch.tensor(self.args.item_freq_class).cuda() if self.args.item_freq_class is not None else None
+        self.aug = aug
 
     def _one_pair_contrastive_learning(self, inputs):
         '''
@@ -301,26 +303,6 @@ class CoSeRecTrainer(Trainer):
                             cl_loss = self._one_pair_contrastive_learning(cl_batch)
                         cl_losses.append(cl_loss)
                 
-                # 在item表征 上加一个item 表征的约束 应用对比学习损失
-                # 先把这个对比损失注释掉  没有效果
-                # if self.args.item_graph is not None:
-                #     # target_pos
-                #     nonzero_indices = torch.nonzero(target_pos)
-                #     item_ids = target_pos[nonzero_indices[:, 0], nonzero_indices[:, 1]]
-                #     item_ids = item_ids.view(-1)
-
-                #     num_neighbors = 2
-                #     sampled_graph = dgl.sampling.sample_neighbors(self.args.item_graph, item_ids, num_neighbors, edge_dir="out")
-                #     # 获取采样后的邻居
-                #     sampled_edges = sampled_graph.edges()
-                #     src, dst = sampled_edges
-                #     # 形成一个infoNCE 损失
-                #     loss_item_cl = self.item_info_NCE(src, dst)
-                #     # 更好的方式是 形成一个待检索的dictionary
-                #     # 
-                #     joint_loss += 0.1*loss_item_cl
-                #     itemcl_sum_avg_loss += loss_item_cl.item()
-
                 joint_loss += self.args.rec_weight * rec_loss
                 for cl_loss in cl_losses:
                     joint_loss += self.args.cf_weight * cl_loss
@@ -415,15 +397,16 @@ class CoSeRecTrainer(Trainer):
                     "mid_freq": np.argwhere(answer_class_list==1).squeeze(),
                     "low_freq": np.argwhere(answer_class_list==0).squeeze(),
                 }
+                high_mid_low_perf = []
                 for key in head_tail:
                     indexes = head_tail[key]
                     answer_list_part, pred_list_part = answer_list[indexes], pred_list[indexes]
                     result_part = self.get_full_sort_score(epoch, answer_list_part, pred_list_part, name=key)
                     self.writer.add_scalar(tag=f"NDCG@20/{key}", scalar_value=result_part[0][5], global_step = epoch)
-                
+                    high_mid_low_perf.append(result_part[0][5])
                 result = self.get_full_sort_score(epoch, answer_list, pred_list, name="all")
                 self.writer.add_scalar(tag=f"NDCG@20/all", scalar_value=result[0][5], global_step = epoch)
-                return result    
+                return result, high_mid_low_perf
 
             else:
                 for i, batch in rec_data_iter:

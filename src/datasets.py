@@ -2,7 +2,7 @@ import random
 import torch
 from torch.utils.data import Dataset
 
-from data_augmentation import Crop, Mask, Reorder, Substitute, Insert, Random, CombinatorialEnumerate
+from data_augmentation import Crop, Mask, Reorder, Substitute, Insert, Random, CombinatorialEnumerate, AdaptiveMask
 from utils import neg_sample, nCr
 import copy
 import numpy as np
@@ -313,7 +313,7 @@ class ExtendDataset(Dataset):
     #     self.max_len = args.max_seq_length
     
     def __init__(self, args, extended_user_seq, test_neg_items=None, data_type='train', 
-                similarity_model_type='offline'):
+                similarity_model_type='offline', aug = None):
         self.args = args
         self.extended_user_seq = extended_user_seq
         self.test_neg_items = test_neg_items
@@ -349,10 +349,12 @@ class ExtendDataset(Dataset):
                             #                     max_insert_num_per_pos=args.max_insert_num_per_pos,
                             #                     substitute_rate=args.substitute_rate, n_views=args.n_views)
                             }
-        if self.args.base_augment_type not in self.augmentations:
-            raise ValueError(f"augmentation type: '{self.args.base_augment_type}' is invalided")
-        print(f"Creating Contrastive Learning Dataset using '{self.args.base_augment_type}' data augmentation")
-        self.base_transform = self.augmentations[self.args.base_augment_type]
+        if aug is not None:
+            self.base_transform = aug
+        else:
+            assert self.args.base_augment_type in self.augmentations
+            print(f"Creating Contrastive Learning Dataset using '{self.args.base_augment_type}' data augmentation")
+            self.base_transform = self.augmentations[self.args.base_augment_type]
         # number of augmentations for each sequences, current support two
         self.n_views = self.args.n_views
 

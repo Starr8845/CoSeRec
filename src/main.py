@@ -14,6 +14,8 @@ from trainers import CoSeRecTrainer
 from models import SASRecModel, OfflineItemSimilarity, OnlineItemSimilarity
 from utils import EarlyStopping, get_user_seqs, get_item2attribute_json, check_path, set_seed, process_item_frequency, extend_user_seqs_train, extend_user_seqs_valid
 from build_graph import build_sim_graph
+from data_augmentation import AdaptiveMask
+
 
 from torch.utils.tensorboard import SummaryWriter  
 
@@ -182,31 +184,37 @@ def main():
     online_similarity_model = OnlineItemSimilarity(item_size=args.item_size)
     args.online_similarity_model = online_similarity_model
 
+    writer = SummaryWriter(f"/home/zzx/seqRec/CLTrys/CoSeRec/logs/{args.data_name}/CoSeRec_single_{args.model_idx}", comment=f"CoSeRec2_{args.similarity_model_name}_{args.cf_weight}")
+
+    args.writer = writer
+
     # training data for node classification
     # train_dataset = RecWithContrastiveLearningDataset(args, 
     #                                 user_seq[:int(len(user_seq)*args.training_data_ratio)], \
     #                                 data_type='train')
-    train_dataset = ExtendDataset(args, extended_user_seq_train, data_type='train')
+
+    my_mask = AdaptiveMask(args=args, writer=writer)
+
+    train_dataset = ExtendDataset(args, extended_user_seq_train, data_type='train', aug = my_mask)
     train_sampler = RandomSampler(train_dataset)
     train_dataloader = DataLoader(train_dataset, sampler=train_sampler, batch_size=args.batch_size)
 
     # eval_dataset = RecWithContrastiveLearningDataset(args, user_seq, data_type='valid')
-    eval_dataset = ExtendDataset(args, extended_user_seq_valid, data_type='valid')
+    eval_dataset = ExtendDataset(args, extended_user_seq_valid, data_type='valid', aug = my_mask)
     eval_sampler = SequentialSampler(eval_dataset)
     eval_dataloader = DataLoader(eval_dataset, sampler=eval_sampler, batch_size=args.batch_size)
 
     # test_dataset = RecWithContrastiveLearningDataset(args, user_seq, data_type='test')
-    test_dataset = ExtendDataset(args, user_seq, data_type="test")
+    test_dataset = ExtendDataset(args, user_seq, data_type="test", aug = my_mask)
     test_sampler = SequentialSampler(test_dataset)
     test_dataloader = DataLoader(test_dataset, sampler=test_sampler, batch_size=args.batch_size)
 
-    writer = SummaryWriter(f"/home/zzx/seqRec/CLTrys/CoSeRec/logs/{args.data_name}/CoSeRec_single_{args.model_idx}", comment=f"CoSeRec2_{args.similarity_model_name}_{args.cf_weight}")
 
     model = SASRecModel(args=args)
 
     trainer = CoSeRecTrainer(model, train_dataloader, eval_dataloader,
                               test_dataloader, args,
-                              writer=writer)
+                              writer=writer, aug=my_mask)
 
 
     if args.do_eval:
@@ -221,7 +229,9 @@ def main():
         for epoch in range(args.epochs):
             trainer.train(epoch)
             # evaluate on NDCG@20
-            scores, _ = trainer.valid(epoch, full_sort=True)
+            (scores, _), (high_perf, mid_perf, low_perf) = trainer.valid(epoch, full_sort=True)
+            if trainer.aug is not None:
+                trainer.aug.refresh(high_perf, mid_perf, low_perf)
             early_stopping(np.array(scores[-1:]), trainer.model)
             if early_stopping.early_stop:
                 print("Early stopping")
@@ -230,7 +240,7 @@ def main():
         print('---------------Change to test_rating_matrix!-------------------')
         # load the best model
         trainer.model.load_state_dict(torch.load(args.checkpoint_path))
-        scores, result_info = trainer.test(epoch+1, full_sort=True)
+        (scores, result_info), _ = trainer.test(epoch+1, full_sort=True)
 
     print(args_str)
     print(result_info)

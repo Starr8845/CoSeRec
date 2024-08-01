@@ -2,6 +2,9 @@ import random
 import copy
 import itertools
 import numpy as np
+import torch
+import torch.nn.functional as F
+
 
 class CombinatorialEnumerate(object):
     """Given M type of augmentations, and a original sequence, successively call \
@@ -273,6 +276,74 @@ class Mask(object):
                     mask_nums=1
                 mask_idx2 = random.sample(sampled_from, k = mask_nums)
                 mask_idx = mask_idx + mask_idx2
+        for idx in mask_idx:
+            copied_sequence[idx] = 0
+        return copied_sequence
+
+
+class AdaptiveMask(object):
+    """Randomly mask k items given a sequence"""
+    def __init__(self, args, writer):
+        self.args = args
+        self.total_gamma = 0.5
+        self.high_weight, self.mid_weight, self.low_weight = 0., 0., 0.
+        # 初始时都为0
+        self.high_perf, self.mid_perf, self.low_perf = [None],[None],[None]
+        self.writer = writer
+        self.high_prob, self.mid_prob, self.low_prob = 1/3, 1/3, 1/3
+        self.prob = np.array([1/3, 1/3, 1/3])
+
+    def smooth(self, last, cur, alpha=0.5):
+        if last is None:
+            return cur
+        return (1-alpha) * last + alpha*cur
+
+    def refresh(self, high_perf, mid_perf, low_perf):
+        self.high_perf.append(self.smooth(self.high_perf[-1], high_perf))
+        self.mid_perf.append(self.smooth(self.mid_perf[-1], mid_perf))
+        self.low_perf.append(self.smooth(self.mid_perf[-1], low_perf))
+        self.adjust_weight()
+
+    def adjust_weight(self):
+        # 根据self.high_perf, self.mid_perf, self.low_perf，来进行调整
+        # 看下validation结果的增长情况
+        high_increase = (self.high_perf[-1] - self.high_perf[-2])/self.high_perf[-2] if self.high_perf[-2] is not None and self.high_perf[-2]!=0 else 0
+        mid_increase = (self.mid_perf[-1] - self.mid_perf[-2])/self.mid_perf[-2] if self.mid_perf[-2] is not None and self.mid_perf[-2]!=0 else 0
+        low_increase = (self.low_perf[-1] - self.low_perf[-2])/self.low_perf[-2] if self.low_perf[-2] is not None and self.low_perf[-2]!=0 else 0
+        max_increase = max(high_increase, mid_increase, low_increase)
+        if max_increase <= 0:
+            return 
+        if max_increase == high_increase:
+            self.high_weight += 1
+            self.total_gamma = min(self.total_gamma+0.05, 0.7)
+        elif max_increase == mid_increase:
+            self.total_gamma = max(self.total_gamma-0.05, 0.1)
+            self.mid_weight += 1
+        elif max_increase == low_increase:
+            self.total_gamma = max(self.total_gamma-0.05, 0.1)
+            self.low_weight += 1
+        self.high_prob, self.mid_prob, self.low_prob = self.mask_prob()
+        self.prob = np.array([self.low_prob, self.mid_prob, self.high_prob])
+
+    def mask_prob(self):
+        result = F.softmax(torch.tensor([self.high_weight, self.mid_weight, self.low_weight])).numpy().tolist()
+        step = len(self.high_perf)
+        self.writer.add_scalar(tag="mask_prob/high", scalar_value=result[0], global_step = step)
+        self.writer.add_scalar(tag="mask_prob/mid", scalar_value=result[1], global_step = step)
+        self.writer.add_scalar(tag="mask_prob/low", scalar_value=result[2], global_step = step)
+        return result[0], result[1], result[2]
+
+    def __call__(self, sequence):
+        # make a deep copy to avoid original sequence be modified
+        copied_sequence = copy.deepcopy(sequence)
+        mask_nums = int(self.total_gamma*len(copied_sequence))
+        mask_nums = max(mask_nums, 1)
+        mask_nums = min(len(copied_sequence)-1, mask_nums)
+        # 根据三个概率来进行选择
+        item_classes = self.args.item_freq_class[np.array(copied_sequence)]
+        weights = self.prob[item_classes]
+        sampled_from = [i for i in range(len(copied_sequence))]
+        mask_idx = random.choices(sampled_from, k = min(mask_nums, len(sampled_from)), weights=weights)
         for idx in mask_idx:
             copied_sequence[idx] = 0
         return copied_sequence

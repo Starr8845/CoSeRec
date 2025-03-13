@@ -314,14 +314,14 @@ class AdaptiveMask(object):
         if max_increase <= 0:
             return 
         if max_increase == high_increase:
-            self.high_weight += 1
-            self.total_gamma = min(self.total_gamma+0.05, 0.7)
+            self.total_gamma = max(self.total_gamma-0.05, 0.1)
+            self.high_weight -= 1
         elif max_increase == mid_increase:
-            self.total_gamma = max(self.total_gamma-0.05, 0.1)
-            self.mid_weight += 1
+            self.total_gamma = min(self.total_gamma+0.05, 0.7)
+            self.mid_weight -= 1
         elif max_increase == low_increase:
-            self.total_gamma = max(self.total_gamma-0.05, 0.1)
-            self.low_weight += 1
+            self.total_gamma = min(self.total_gamma+0.05, 0.7)
+            self.low_weight -= 1
         self.high_prob, self.mid_prob, self.low_prob = self.mask_prob()
         self.prob = np.array([self.low_prob, self.mid_prob, self.high_prob])
 
